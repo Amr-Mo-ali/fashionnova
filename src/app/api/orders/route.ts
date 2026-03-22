@@ -81,6 +81,7 @@ export async function POST(request: Request) {
         size: string
         color: string
         price: number
+        productName: string
       }[] = []
 
       for (const line of items) {
@@ -108,6 +109,7 @@ export async function POST(request: Request) {
           size: line.size,
           color: line.color,
           price: product.price,
+          productName: product.name,
         })
       }
 
@@ -140,10 +142,23 @@ export async function POST(request: Request) {
         })
       }
 
-      return created
+      return { created, orderLines, total }
     })
 
-    return NextResponse.json(order, { status: 201 })
+    // WhatsApp notification
+    try {
+      const itemsList = order.orderLines
+        .map((l) => `${l.quantity}x ${l.productName}${l.size ? ` (${l.size})` : ''}${l.color ? ` - ${l.color}` : ''}`)
+        .join('\n')
+
+      const message = `🛍️ New Order!\n👤 Customer: ${customerName}\n📞 Phone: ${phone}\n📍 Address: ${address}\n\n📦 Items:\n${itemsList}\n\n💰 Total: EGP ${order.total}`
+      const encodedMessage = encodeURIComponent(message)
+      await fetch(`https://api.callmebot.com/whatsapp.php?phone=201024888895&text=${encodedMessage}&apikey=9145279`)
+    } catch {
+      // don't block the order if notification fails
+    }
+
+    return NextResponse.json(order.created, { status: 201 })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Could not place order'
     return NextResponse.json({ error: message }, { status: 400 })
