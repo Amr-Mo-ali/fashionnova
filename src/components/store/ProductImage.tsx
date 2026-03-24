@@ -24,7 +24,7 @@ export default function ProductImage({
   if (!resolved) {
     return (
       <div
-        className={`flex items-center justify-center bg-[#2A181F] text-sm text-[#8C6070] ${className}`}
+        className={`flex items-center justify-center bg-[#1a1816] text-sm text-[#7a7068] ${className}`}
       >
         No image
       </div>

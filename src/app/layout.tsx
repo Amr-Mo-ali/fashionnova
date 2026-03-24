@@ -1,15 +1,15 @@
 import { CartProvider } from "@/components/store/CartProvider";
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-playfair",
   display: "swap",
@@ -28,10 +28,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body
-        className={`${inter.className} flex min-h-full flex-col bg-[#1A0E13] text-[#FAF6F1]`}
+        className={`${dmSans.className} flex min-h-full flex-col bg-[#f5f2ed] text-[#0f0e0d]`}
       >
         <CartProvider>{children}</CartProvider>
       </body>
