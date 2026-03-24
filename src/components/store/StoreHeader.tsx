@@ -19,7 +19,7 @@ export default function StoreHeader() {
       initial={{ y: -8, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as const }}
-      className="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/75 backdrop-blur-xl backdrop-saturate-150"
+      className="sticky top-0 z-50 border-b border-zinc-800/50 bg-black/60 backdrop-blur-md backdrop-saturate-150"
     >
       <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between px-4 sm:px-8">
         <Link

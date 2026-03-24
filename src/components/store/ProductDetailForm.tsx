@@ -74,14 +74,14 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#D4AF37]">
           {product.category}
         </p>
-        <h1 className="mt-3 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-tight text-white sm:text-5xl">
+        <h1 className="mt-5 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-[1.15] text-white sm:text-5xl md:text-6xl">
           {product.name}
         </h1>
-        <p className="mt-6 text-2xl font-medium text-[#D4AF37]">
+        <p className="mt-8 text-2xl font-medium tracking-tight text-[#D4AF37]">
           EGP {product.price.toLocaleString()}
         </p>
-        <p className="mt-6 leading-relaxed text-zinc-400">{product.description}</p>
-        <p className="mt-4 text-sm text-zinc-500">
+        <p className="mt-8 leading-[1.75] text-zinc-400">{product.description}</p>
+        <p className="mt-5 text-sm text-zinc-500">
           {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
         </p>
 
@@ -93,16 +93,18 @@ export default function ProductDetailForm({ product }: { product: Product }) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {sizes.map((s) => (
-                  <button
+                  <motion.button
                     key={s}
                     type="button"
                     onClick={() => setSize(s)}
-                    className={`rounded-full border px-5 py-2.5 text-sm font-medium transition ${
+                    whileTap={{ scale: 0.94 }}
+                    layout
+                    className={`min-h-[44px] rounded-full border px-5 py-2.5 text-sm font-medium transition ${
                       size === s ? chipActive : chipIdle
                     }`}
                   >
                     {s}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -115,16 +117,18 @@ export default function ProductDetailForm({ product }: { product: Product }) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {colors.map((c) => (
-                  <button
+                  <motion.button
                     key={c}
                     type="button"
                     onClick={() => setColor(c)}
-                    className={`rounded-full border px-5 py-2.5 text-sm font-medium transition ${
+                    whileTap={{ scale: 0.94 }}
+                    layout
+                    className={`min-h-[44px] rounded-full border px-5 py-2.5 text-sm font-medium transition ${
                       color === c ? chipActive : chipIdle
                     }`}
                   >
                     {c}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -168,21 +172,21 @@ export default function ProductDetailForm({ product }: { product: Product }) {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-wrap gap-4">
+        <div className="mt-14 flex flex-wrap gap-4">
           <motion.button
             type="button"
             disabled={!canAdd}
             onClick={handleAddToCart}
             whileHover={canAdd ? { scale: 1.02 } : undefined}
             whileTap={canAdd ? { scale: 0.98 } : undefined}
-            className="rounded-full bg-[#D4AF37] px-10 py-4 text-sm font-semibold uppercase tracking-wider text-zinc-950 transition hover:bg-[#e5c04a] disabled:cursor-not-allowed disabled:opacity-40"
+            className="min-h-[52px] rounded-full border-2 border-[#D4AF37] bg-transparent px-10 py-3.5 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4AF37] disabled:cursor-not-allowed disabled:border-zinc-700 disabled:text-zinc-600"
           >
             {added ? 'Added — view bag' : 'Add to bag'}
           </motion.button>
           <button
             type="button"
             onClick={() => router.push('/cart')}
-            className="rounded-full border border-zinc-600 px-8 py-4 text-sm font-semibold text-zinc-300 transition hover:border-[#D4AF37]/50 hover:text-[#D4AF37]"
+            className="min-h-[52px] rounded-full border border-zinc-600 px-9 py-3.5 text-sm font-semibold text-zinc-300 transition hover:border-[#D4AF37]/60 hover:text-[#D4AF37]"
           >
             Full cart
           </button>

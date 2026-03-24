@@ -179,11 +179,13 @@ export default function CartDrawer() {
                         EGP {subtotal.toLocaleString()}
                       </span>
                     </div>
-                    <p className="mt-2 text-xs text-zinc-600">Cash on delivery at checkout.</p>
+                    <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                      Deposit required at checkout; balance on delivery.
+                    </p>
                     <Link
                       href="/checkout"
                       onClick={closeCartDrawer}
-                      className="mt-4 flex w-full items-center justify-center rounded-xl bg-[#D4AF37] py-3.5 text-sm font-semibold text-zinc-950 transition hover:bg-[#e5c04a]"
+                      className="mt-4 flex min-h-[48px] w-full items-center justify-center rounded-full border-2 border-[#D4AF37] bg-transparent py-3 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:bg-[#D4AF37]/10"
                     >
                       Checkout
                     </Link>

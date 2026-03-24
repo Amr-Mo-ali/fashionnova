@@ -25,7 +25,7 @@ export default function CartPage() {
         transition={{ duration: 0.4 }}
       >
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#D4AF37]">Your selection</p>
-        <h1 className="mt-3 font-[family-name:var(--font-playfair),serif] text-4xl font-medium text-white">
+        <h1 className="mt-4 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-tight text-white md:text-5xl">
           Shopping bag
         </h1>
       </motion.div>
@@ -39,7 +39,7 @@ export default function CartPage() {
           <p className="text-zinc-500">Your bag is empty.</p>
           <Link
             href="/"
-            className="mt-8 inline-flex rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-8 py-3.5 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:border-[#D4AF37] hover:bg-[#D4AF37]/20"
+            className="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#D4AF37]/70 px-10 py-3 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:bg-[#D4AF37]/10"
           >
             Continue shopping
           </Link>
@@ -129,10 +129,12 @@ export default function CartPage() {
               <span>Subtotal</span>
               <span className="font-semibold text-[#D4AF37]">EGP {subtotal.toLocaleString()}</span>
             </div>
-            <p className="mt-3 text-xs text-zinc-600">Cash on delivery at checkout.</p>
+            <p className="mt-3 text-xs leading-relaxed text-zinc-600">
+              Deposit + balance on delivery — see checkout for details.
+            </p>
             <Link
               href="/checkout"
-              className="mt-8 flex w-full items-center justify-center rounded-full bg-[#D4AF37] py-4 text-sm font-semibold uppercase tracking-wider text-zinc-950 transition hover:bg-[#e5c04a]"
+              className="mt-8 flex min-h-[52px] w-full items-center justify-center rounded-full border-2 border-[#D4AF37] bg-transparent py-3.5 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:bg-[#D4AF37]/10"
             >
               Checkout
             </Link>
