@@ -34,8 +34,7 @@ function parseCheckoutItems(raw: unknown): IncomingItem[] | null {
     if (!row || typeof row !== 'object') return null
     const o = row as Record<string, unknown>
     const productId = typeof o.productId === 'string' ? o.productId : ''
-    const quantity =
-      typeof o.quantity === 'number' ? o.quantity : Number(o.quantity)
+    const quantity = typeof o.quantity === 'number' ? o.quantity : Number(o.quantity)
     const size = typeof o.size === 'string' ? o.size : ''
     const color = typeof o.color === 'string' ? o.color : ''
     if (!productId || !Number.isFinite(quantity) || quantity < 1 || !Number.isInteger(quantity)) {
@@ -73,6 +72,16 @@ export async function POST(request: Request) {
   }
 
   try {
+    // collect product names before transaction for WhatsApp message
+    const productDetails: Record<string, { name: string; price: number }> = {}
+
+    for (const line of items) {
+      const product = await prisma.product.findUnique({ where: { id: line.productId } })
+      if (product) {
+        productDetails[line.productId] = { name: product.name, price: product.price }
+      }
+    }
+
     const order = await prisma.$transaction(async (tx) => {
       let total = 0
       const orderLines: {
@@ -81,36 +90,17 @@ export async function POST(request: Request) {
         size: string
         color: string
         price: number
-        productName: string
       }[] = []
 
       for (const line of items) {
         const product = await tx.product.findUnique({ where: { id: line.productId } })
-        if (!product) {
-          throw new Error('One or more products are no longer available')
-        }
+        if (!product) throw new Error('One or more products are no longer available')
+        if (product.sizes.length > 0 && !product.sizes.includes(line.size)) throw new Error(`Invalid size for ${product.name}`)
+        if (product.colors.length > 0 && !product.colors.includes(line.color)) throw new Error(`Invalid color for ${product.name}`)
+        if (product.stock < line.quantity) throw new Error(`Not enough stock for ${product.name}`)
 
-        if (product.sizes.length > 0 && !product.sizes.includes(line.size)) {
-          throw new Error(`Invalid size for ${product.name}`)
-        }
-        if (product.colors.length > 0 && !product.colors.includes(line.color)) {
-          throw new Error(`Invalid color for ${product.name}`)
-        }
-
-        if (product.stock < line.quantity) {
-          throw new Error(`Not enough stock for ${product.name}`)
-        }
-
-        const lineTotal = product.price * line.quantity
-        total += lineTotal
-        orderLines.push({
-          productId: line.productId,
-          quantity: line.quantity,
-          size: line.size,
-          color: line.color,
-          price: product.price,
-          productName: product.name,
-        })
+        total += product.price * line.quantity
+        orderLines.push({ productId: line.productId, quantity: line.quantity, size: line.size, color: line.color, price: product.price })
       }
 
       const created = await tx.order.create({
@@ -142,23 +132,27 @@ export async function POST(request: Request) {
         })
       }
 
-      return { created, orderLines, total }
+      return created
     })
 
     // WhatsApp notification
     try {
-      const itemsList = order.orderLines
-        .map((l) => `${l.quantity}x ${l.productName}${l.size ? ` (${l.size})` : ''}${l.color ? ` - ${l.color}` : ''}`)
+      const itemsList = items
+        .map((l) => {
+          const name = productDetails[l.productId]?.name ?? 'Product'
+          return `${l.quantity}x ${name}${l.size ? ` (${l.size})` : ''}${l.color ? ` - ${l.color}` : ''}`
+        })
         .join('\n')
 
-      const message = `🛍️ New Order!\n👤 Customer: ${customerName}\n📞 Phone: ${phone}\n📍 Address: ${address}\n\n📦 Items:\n${itemsList}\n\n💰 Total: EGP ${order.total}`
+      const total = items.reduce((sum, l) => sum + (productDetails[l.productId]?.price ?? 0) * l.quantity, 0)
+      const message = `🛍️ New Order!\n👤 Customer: ${customerName}\n📞 Phone: ${phone}\n📍 Address: ${address}\n\n📦 Items:\n${itemsList}\n\n💰 Total: EGP ${total}`
       const encodedMessage = encodeURIComponent(message)
       await fetch(`https://api.callmebot.com/whatsapp.php?phone=201024888895&text=${encodedMessage}&apikey=9145279`)
     } catch {
       // don't block the order if notification fails
     }
 
-    return NextResponse.json(order.created, { status: 201 })
+    return NextResponse.json(order, { status: 201 })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Could not place order'
     return NextResponse.json({ error: message }, { status: 400 })
