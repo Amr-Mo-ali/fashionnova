@@ -47,9 +47,9 @@ export default function ProductDetailForm({ product }: { product: Product }) {
   }
 
   const chipActive =
-    'border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37]'
+    'border-[#C8728A] bg-[#C8728A]/12 text-[#C8728A]'
   const chipIdle =
-    'border-zinc-700 text-zinc-300 hover:border-[#D4AF37]/40 hover:text-white'
+    'border-[#3D252F] text-[#C9A9B4] hover:border-[#C8728A]/40 hover:text-[#FAF6F1]'
 
   return (
     <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
@@ -61,7 +61,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         <ProductImage
           src={image}
           alt={product.name}
-          className="aspect-[4/5] w-full max-h-[620px] rounded-2xl border border-zinc-800/60 shadow-2xl shadow-black/40 lg:max-h-none"
+          className="aspect-[4/5] w-full max-h-[620px] rounded-2xl border border-[#3D252F]/60 shadow-2xl shadow-black/40 lg:max-h-none"
         />
       </motion.div>
 
@@ -71,24 +71,24 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] as const }}
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#D4AF37]">
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C8728A]">
           {product.category}
         </p>
-        <h1 className="mt-5 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-[1.15] text-white sm:text-5xl md:text-6xl">
+        <h1 className="mt-5 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-[1.15] text-[#FAF6F1] sm:text-5xl md:text-6xl">
           {product.name}
         </h1>
-        <p className="mt-8 text-2xl font-medium tracking-tight text-[#D4AF37]">
+        <p className="mt-8 text-2xl font-medium tracking-tight text-[#C8728A]">
           EGP {product.price.toLocaleString()}
         </p>
-        <p className="mt-8 leading-[1.75] text-zinc-400">{product.description}</p>
-        <p className="mt-5 text-sm text-zinc-500">
+        <p className="mt-8 leading-[1.75] text-[#8C6070]">{product.description}</p>
+        <p className="mt-5 text-sm text-[#8C6070]">
           {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
         </p>
 
         <div className="mt-10 space-y-8">
           {sizes.length > 0 ? (
             <div>
-              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-[#8C6070]">
                 Size
               </p>
               <div className="flex flex-wrap gap-2">
@@ -112,7 +112,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
 
           {colors.length > 0 ? (
             <div>
-              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-[#8C6070]">
                 Color
               </p>
               <div className="flex flex-wrap gap-2">
@@ -135,14 +135,14 @@ export default function ProductDetailForm({ product }: { product: Product }) {
           ) : null}
 
           <div>
-            <label htmlFor="qty" className="mb-3 block text-xs font-medium uppercase tracking-wider text-zinc-500">
+            <label htmlFor="qty" className="mb-3 block text-xs font-medium uppercase tracking-wider text-[#8C6070]">
               Quantity
             </label>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 aria-label="Decrease quantity"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-700 text-lg text-white transition hover:border-[#D4AF37]/50"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#3D252F] text-lg text-[#FAF6F1] transition hover:border-[#C8728A]/50"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
               >
                 −
@@ -158,12 +158,12 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                   if (!Number.isFinite(v)) return
                   setQuantity(Math.min(product.stock, Math.max(1, Math.round(v))))
                 }}
-                className="w-20 rounded-xl border border-zinc-700 bg-zinc-900 py-2.5 text-center text-white focus:border-[#D4AF37] focus:outline-none"
+                className="w-20 rounded-xl border border-[#3D252F] bg-[#23151c] py-2.5 text-center text-[#FAF6F1] focus:border-[#C8728A] focus:outline-none"
               />
               <button
                 type="button"
                 aria-label="Increase quantity"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-700 text-lg text-white transition hover:border-[#D4AF37]/50"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#3D252F] text-lg text-[#FAF6F1] transition hover:border-[#C8728A]/50"
                 onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
               >
                 +
@@ -179,14 +179,14 @@ export default function ProductDetailForm({ product }: { product: Product }) {
             onClick={handleAddToCart}
             whileHover={canAdd ? { scale: 1.02 } : undefined}
             whileTap={canAdd ? { scale: 0.98 } : undefined}
-            className="min-h-[52px] rounded-full border-2 border-[#D4AF37] bg-transparent px-10 py-3.5 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4AF37] disabled:cursor-not-allowed disabled:border-zinc-700 disabled:text-zinc-600"
+            className="min-h-[52px] rounded-full border-2 border-[#C8728A] bg-transparent px-10 py-3.5 text-sm font-semibold uppercase tracking-wider text-[#C8728A] transition hover:bg-[#C8728A]/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8728A] disabled:cursor-not-allowed disabled:border-[#3D252F] disabled:text-[#8C6070]"
           >
             {added ? 'Added — view bag' : 'Add to bag'}
           </motion.button>
           <button
             type="button"
             onClick={() => router.push('/cart')}
-            className="min-h-[52px] rounded-full border border-zinc-600 px-9 py-3.5 text-sm font-semibold text-zinc-300 transition hover:border-[#D4AF37]/60 hover:text-[#D4AF37]"
+            className="min-h-[52px] rounded-full border border-[#3D252F] px-9 py-3.5 text-sm font-semibold text-[#C9A9B4] transition hover:border-[#C8728A]/60 hover:text-[#C8728A]"
           >
             Full cart
           </button>
@@ -194,7 +194,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
 
         <Link
           href="/"
-          className="mt-10 inline-flex text-sm text-zinc-500 transition hover:text-[#D4AF37]"
+          className="mt-10 inline-flex text-sm text-[#8C6070] transition hover:text-[#C8728A]"
         >
           ← Back to collection
         </Link>

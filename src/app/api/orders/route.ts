@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { requireSession } from '@/lib/api-auth'
+import { computeDepositFromUnitPrices } from '@/lib/order-deposit'
 
 export async function GET() {
   const session = await requireSession()
@@ -145,7 +146,11 @@ export async function POST(request: Request) {
         .join('\n')
 
       const total = items.reduce((sum, l) => sum + (productDetails[l.productId]?.price ?? 0) * l.quantity, 0)
-      const message = `🛍️ New Order!\n👤 Customer: ${customerName}\n📞 Phone: ${phone}\n📍 Address: ${address}\n\n📦 Items:\n${itemsList}\n\n💰 Total: EGP ${total}`
+      const unitPrices = items
+        .map((l) => productDetails[l.productId]?.price)
+        .filter((p): p is number => typeof p === 'number')
+      const deposit = computeDepositFromUnitPrices(unitPrices)
+      const message = `🛍️ New Order!\n👤 Customer: ${customerName}\n📞 Phone: ${phone}\n📍 Address: ${address}\n\n📦 Items:\n${itemsList}\n\n💰 Total: EGP ${total}\n\n💳 Deposit: EGP ${deposit} (10% of highest item)\nPay via 📱 Vodafone Cash or 💳 Instapay to 01024888895`
       const encodedMessage = encodeURIComponent(message)
       await fetch(`https://api.callmebot.com/whatsapp.php?phone=201024888895&text=${encodedMessage}&apikey=9145279`)
     } catch {

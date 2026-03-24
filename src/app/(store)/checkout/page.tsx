@@ -1,35 +1,13 @@
 'use client'
 
 import { useCart } from '@/components/store/CartProvider'
+import { computeDepositFromUnitPrices } from '@/lib/order-deposit'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 
 const PAYMENT_NUMBER = '01024888895'
-
-function VodafoneIcon() {
-  return (
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-600/90 text-xs font-bold text-white">
-      V
-    </span>
-  )
-}
-
-function InstapayIcon() {
-  return (
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37]">
-      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.5}
-          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-        />
-      </svg>
-    </span>
-  )
-}
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -41,11 +19,10 @@ export default function CheckoutPage() {
   const [error, setError] = useState('')
   const [depositConfirmed, setDepositConfirmed] = useState(false)
 
-  const depositAmount = useMemo(() => {
-    if (lines.length === 0) return 0
-    const maxUnit = Math.max(...lines.map((l) => l.price))
-    return Math.round(maxUnit * 0.1 * 100) / 100
-  }, [lines])
+  const depositAmount = useMemo(
+    () => computeDepositFromUnitPrices(lines.map((l) => l.price)),
+    [lines]
+  )
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -55,7 +32,7 @@ export default function CheckoutPage() {
       return
     }
     if (!depositConfirmed) {
-      setError('Please confirm you will send the deposit before delivery.')
+      setError('Please confirm you have sent the deposit before placing your order.')
       return
     }
     setLoading(true)
@@ -100,15 +77,15 @@ export default function CheckoutPage() {
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-16 text-center"
+          className="rounded-2xl border border-[#3D252F]/80 bg-[#23151c]/40 p-16 text-center"
         >
-          <h1 className="font-[family-name:var(--font-playfair),serif] text-3xl text-white">
+          <h1 className="font-[family-name:var(--font-playfair),serif] text-3xl text-[#FAF6F1]">
             Checkout
           </h1>
-          <p className="mt-4 text-zinc-500">Your cart is empty.</p>
+          <p className="mt-4 text-[#8C6070]">Your cart is empty.</p>
           <Link
             href="/"
-            className="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#D4AF37]/70 px-10 py-3 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:bg-[#D4AF37]/10"
+            className="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#C8728A]/70 px-10 py-3 text-sm font-semibold uppercase tracking-wider text-[#C8728A] transition hover:bg-[#C8728A]/15"
           >
             Back to collection
           </Link>
@@ -117,6 +94,11 @@ export default function CheckoutPage() {
     )
   }
 
+  const depositLabel = depositAmount.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
       <motion.div
@@ -124,13 +106,13 @@ export default function CheckoutPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#D4AF37]">Secure</p>
-        <h1 className="mt-4 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-tight text-white md:text-5xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#C8728A]">Secure</p>
+        <h1 className="mt-4 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-tight text-[#FAF6F1] md:text-5xl">
           Checkout
         </h1>
-        <p className="mt-4 max-w-xl text-sm leading-relaxed text-zinc-500">
-          Send a <span className="text-[#D4AF37]">10% deposit</span> on the highest-priced item in your
-          bag before we ship. The rest is <span className="text-zinc-400">cash on delivery</span>.
+        <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#8C6070]">
+          A required <span className="text-[#C8728A]">10% deposit</span> is based on your
+          highest-priced item. The balance is <span className="text-[#C9A9B4]">cash on delivery</span>.
         </p>
       </motion.div>
 
@@ -143,17 +125,17 @@ export default function CheckoutPage() {
           className="space-y-8 lg:col-span-3"
         >
           {error ? (
-            <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
               {error}
             </div>
           ) : null}
 
           <div className="space-y-6">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8C6070]">
               Delivery details
             </h2>
             <div>
-              <label htmlFor="name" className="mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <label htmlFor="name" className="mb-2 block text-xs font-medium uppercase tracking-wider text-[#8C6070]">
                 Full name
               </label>
               <input
@@ -161,11 +143,11 @@ export default function CheckoutPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-3.5 text-white placeholder:text-zinc-600 focus:border-[#D4AF37]/60 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/30"
+                className="w-full rounded-xl border border-[#3D252F] bg-[#23151c]/60 px-4 py-3.5 text-[#FAF6F1] placeholder:text-[#8C6070]/50 focus:border-[#C8728A]/60 focus:outline-none focus:ring-1 focus:ring-[#C8728A]/30"
               />
             </div>
             <div>
-              <label htmlFor="phone" className="mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <label htmlFor="phone" className="mb-2 block text-xs font-medium uppercase tracking-wider text-[#8C6070]">
                 Phone
               </label>
               <input
@@ -174,11 +156,11 @@ export default function CheckoutPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-3.5 text-white focus:border-[#D4AF37]/60 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/30"
+                className="w-full rounded-xl border border-[#3D252F] bg-[#23151c]/60 px-4 py-3.5 text-[#FAF6F1] focus:border-[#C8728A]/60 focus:outline-none focus:ring-1 focus:ring-[#C8728A]/30"
               />
             </div>
             <div>
-              <label htmlFor="address" className="mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-500">
+              <label htmlFor="address" className="mb-2 block text-xs font-medium uppercase tracking-wider text-[#8C6070]">
                 Delivery address
               </label>
               <textarea
@@ -187,54 +169,61 @@ export default function CheckoutPage() {
                 onChange={(e) => setAddress(e.target.value)}
                 required
                 rows={4}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-3.5 text-white focus:border-[#D4AF37]/60 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/30"
+                className="w-full rounded-xl border border-[#3D252F] bg-[#23151c]/60 px-4 py-3.5 text-[#FAF6F1] focus:border-[#C8728A]/60 focus:outline-none focus:ring-1 focus:ring-[#C8728A]/30"
               />
             </div>
           </div>
 
-          <div className="space-y-5 border-t border-zinc-800/80 pt-10">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+          <div className="space-y-5 border-t border-[#3D252F]/80 pt-10">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8C6070]">
               Payment deposit
             </h2>
-            <p className="text-sm leading-relaxed text-zinc-400">
-              Transfer <span className="font-semibold text-white">10%</span> of your most expensive
-              item&apos;s price before we dispatch your order.
+            <p className="text-sm font-medium text-[#C9A9B4]">
+              Please send the deposit BEFORE placing your order.
             </p>
-            <div className="rounded-2xl border border-[#D4AF37]/35 bg-[#D4AF37]/5 px-5 py-4">
-              <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+            <p className="text-sm leading-relaxed text-[#8C6070]">
+              Transfer <span className="font-semibold text-[#FAF6F1]">10%</span> of your most expensive
+              item&apos;s unit price using one of the methods below.
+            </p>
+            <div className="rounded-2xl border border-[#C8728A]/35 bg-[#C8728A]/10 px-5 py-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#8C6070]">
                 Deposit required
               </p>
-              <p className="mt-2 font-[family-name:var(--font-playfair),serif] text-2xl text-[#D4AF37]">
-                EGP {depositAmount.toLocaleString()}
+              <p className="mt-2 font-[family-name:var(--font-playfair),serif] text-2xl text-[#C8728A]">
+                EGP {depositLabel}
               </p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex gap-4 rounded-xl border border-zinc-800/90 bg-zinc-900/40 p-4">
-                <VodafoneIcon />
+              <div className="flex gap-4 rounded-xl border border-[#3D252F]/90 bg-[#23151c]/40 p-4">
+                <span className="text-2xl" aria-hidden>
+                  📱
+                </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white">Vodafone Cash</p>
-                  <p className="mt-1 font-mono text-sm text-[#D4AF37]">{PAYMENT_NUMBER}</p>
+                  <p className="text-sm font-semibold text-[#FAF6F1]">Vodafone Cash</p>
+                  <p className="mt-1 font-mono text-sm text-[#C8728A]">{PAYMENT_NUMBER}</p>
                 </div>
               </div>
-              <div className="flex gap-4 rounded-xl border border-zinc-800/90 bg-zinc-900/40 p-4">
-                <InstapayIcon />
+              <div className="flex gap-4 rounded-xl border border-[#3D252F]/90 bg-[#23151c]/40 p-4">
+                <span className="text-2xl" aria-hidden>
+                  💳
+                </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white">Instapay</p>
-                  <p className="mt-1 font-mono text-sm text-[#D4AF37]">{PAYMENT_NUMBER}</p>
+                  <p className="text-sm font-semibold text-[#FAF6F1]">Instapay</p>
+                  <p className="mt-1 font-mono text-sm text-[#C8728A]">{PAYMENT_NUMBER}</p>
                 </div>
               </div>
             </div>
 
-            <label className="flex min-h-[48px] cursor-pointer items-start gap-3 rounded-xl border border-zinc-800 bg-zinc-900/30 p-4 transition hover:border-zinc-700">
+            <label className="flex min-h-[48px] cursor-pointer items-start gap-3 rounded-xl border border-[#3D252F] bg-[#23151c]/30 p-4 transition hover:border-[#C8728A]/30">
               <input
                 type="checkbox"
                 checked={depositConfirmed}
                 onChange={(e) => setDepositConfirmed(e.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-600 text-[#D4AF37] focus:ring-[#D4AF37]/40"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-[#3D252F] text-[#C8728A] focus:ring-[#C8728A]/40"
               />
-              <span className="text-sm leading-snug text-zinc-300">
-                I confirm I will send the deposit before delivery
+              <span className="text-sm leading-snug text-[#C9A9B4]">
+                I confirm I have sent the deposit of EGP {depositLabel}
               </span>
             </label>
           </div>
@@ -244,7 +233,7 @@ export default function CheckoutPage() {
             disabled={loading || !depositConfirmed}
             whileHover={loading || !depositConfirmed ? undefined : { scale: 1.01 }}
             whileTap={loading || !depositConfirmed ? undefined : { scale: 0.99 }}
-            className="w-full min-h-[52px] rounded-full border-2 border-[#D4AF37] bg-transparent py-4 text-sm font-semibold uppercase tracking-wider text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4AF37] disabled:cursor-not-allowed disabled:border-zinc-700 disabled:text-zinc-600 lg:max-w-sm"
+            className="w-full min-h-[52px] rounded-full border-2 border-[#C8728A] bg-transparent py-4 text-sm font-semibold uppercase tracking-wider text-[#C8728A] transition hover:bg-[#C8728A]/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8728A] disabled:cursor-not-allowed disabled:border-[#3D252F] disabled:text-[#8C6070] lg:max-w-sm"
           >
             {loading ? 'Placing order…' : 'Place order'}
           </motion.button>
@@ -254,28 +243,27 @@ export default function CheckoutPage() {
           initial={{ opacity: 0, x: 16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
-          className="h-fit rounded-2xl border border-zinc-800/80 bg-zinc-900/50 p-8 lg:col-span-2 lg:sticky lg:top-28"
+          className="h-fit rounded-2xl border border-[#3D252F]/80 bg-[#23151c]/50 p-8 lg:col-span-2 lg:sticky lg:top-28"
         >
-          <h2 className="font-[family-name:var(--font-playfair),serif] text-xl font-medium text-white">
+          <h2 className="font-[family-name:var(--font-playfair),serif] text-xl font-medium text-[#FAF6F1]">
             Order summary
           </h2>
-          <ul className="mt-8 space-y-4 border-b border-zinc-800/80 pb-8">
+          <ul className="mt-8 space-y-4 border-b border-[#3D252F]/80 pb-8">
             {lines.map((l) => (
               <li key={`${l.productId}-${l.size}-${l.color}`} className="flex justify-between gap-4 text-sm">
-                <span className="text-zinc-400">
+                <span className="text-[#8C6070]">
                   {l.name} × {l.quantity}
                 </span>
-                <span className="shrink-0 text-[#D4AF37]">EGP {(l.price * l.quantity).toLocaleString()}</span>
+                <span className="shrink-0 text-[#C8728A]">EGP {(l.price * l.quantity).toLocaleString()}</span>
               </li>
             ))}
           </ul>
-          <div className="mt-8 flex justify-between font-[family-name:var(--font-playfair),serif] text-lg text-white">
+          <div className="mt-8 flex justify-between font-[family-name:var(--font-playfair),serif] text-lg text-[#FAF6F1]">
             <span>Total</span>
-            <span className="text-[#D4AF37]">EGP {subtotal.toLocaleString()}</span>
+            <span className="text-[#C8728A]">EGP {subtotal.toLocaleString()}</span>
           </div>
-          <p className="mt-6 text-xs leading-relaxed text-zinc-600">
-            Balance due in cash when your order arrives. Deposit must be sent first using the methods
-            above.
+          <p className="mt-6 text-xs leading-relaxed text-[#8C6070]">
+            Balance due in cash when your order arrives, after your deposit is received.
           </p>
         </motion.div>
       </div>

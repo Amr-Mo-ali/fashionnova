@@ -31,7 +31,7 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body
-        className={`${inter.className} flex min-h-full flex-col bg-zinc-950 text-zinc-100`}
+        className={`${inter.className} flex min-h-full flex-col bg-[#1A0E13] text-[#FAF6F1]`}
       >
         <CartProvider>{children}</CartProvider>
       </body>
