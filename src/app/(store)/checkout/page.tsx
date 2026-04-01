@@ -100,7 +100,7 @@ export default function CheckoutPage() {
   })
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-8">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -114,9 +114,18 @@ export default function CheckoutPage() {
           A required <span className="text-[#C8728A]">10% deposit</span> is based on your
           highest-priced item. The balance is <span className="text-[#C9A9B4]">cash on delivery</span>.
         </p>
+
+        <div className="mt-8 flex flex-col gap-2">
+          <div className="text-xs uppercase tracking-[0.35em] text-[#7a7068]">Checkout</div>
+          <div className="grid grid-cols-3 gap-3 text-[11px] uppercase tracking-[0.25em] text-[#7a7068]">
+            <span className="rounded-none border-b-2 border-[var(--gold)] pb-3 text-[var(--ink)]">Info</span>
+            <span className="rounded-none border-b border-[var(--border)] pb-3">Payment</span>
+            <span className="rounded-none border-b border-[var(--border)] pb-3">Confirm</span>
+          </div>
+        </div>
       </motion.div>
 
-      <div className="mt-14 grid gap-14 lg:grid-cols-5">
+      <div className="mt-14 grid gap-14">
         <motion.form
           initial={{ opacity: 0, x: -12 }}
           animate={{ opacity: 1, x: 0 }}
@@ -135,7 +144,7 @@ export default function CheckoutPage() {
               Delivery details
             </h2>
             <div>
-              <label htmlFor="name" className="mb-2 block text-xs font-medium uppercase tracking-wider text-[#8C6070]">
+              <label htmlFor="name" className="mb-2 block text-[10px] uppercase tracking-[0.25em] text-[#8C6070]">
                 Full name
               </label>
               <input
@@ -143,11 +152,11 @@ export default function CheckoutPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full rounded-xl border border-[#3D252F] bg-[#23151c]/60 px-4 py-3.5 text-[#FAF6F1] placeholder:text-[#8C6070]/50 focus:border-[#C8728A]/60 focus:outline-none focus:ring-1 focus:ring-[#C8728A]/30"
+                className="w-full border-0 border-b border-[#3D252F]/40 bg-transparent py-3 text-base text-[#0f0e0d] outline-none transition focus:border-[var(--gold)]"
               />
             </div>
             <div>
-              <label htmlFor="phone" className="mb-2 block text-xs font-medium uppercase tracking-wider text-[#8C6070]">
+              <label htmlFor="phone" className="mb-2 block text-[10px] uppercase tracking-[0.25em] text-[#8C6070]">
                 Phone
               </label>
               <input
@@ -156,11 +165,11 @@ export default function CheckoutPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                className="w-full rounded-xl border border-[#3D252F] bg-[#23151c]/60 px-4 py-3.5 text-[#FAF6F1] focus:border-[#C8728A]/60 focus:outline-none focus:ring-1 focus:ring-[#C8728A]/30"
+                className="w-full border-0 border-b border-[#3D252F]/40 bg-transparent py-3 text-base text-[#0f0e0d] outline-none transition focus:border-[var(--gold)]"
               />
             </div>
             <div>
-              <label htmlFor="address" className="mb-2 block text-xs font-medium uppercase tracking-wider text-[#8C6070]">
+              <label htmlFor="address" className="mb-2 block text-[10px] uppercase tracking-[0.25em] text-[#8C6070]">
                 Delivery address
               </label>
               <textarea
@@ -169,7 +178,7 @@ export default function CheckoutPage() {
                 onChange={(e) => setAddress(e.target.value)}
                 required
                 rows={4}
-                className="w-full rounded-xl border border-[#3D252F] bg-[#23151c]/60 px-4 py-3.5 text-[#FAF6F1] focus:border-[#C8728A]/60 focus:outline-none focus:ring-1 focus:ring-[#C8728A]/30"
+                className="w-full border-0 border-b border-[#3D252F]/40 bg-transparent py-3 text-base text-[#0f0e0d] outline-none transition focus:border-[var(--gold)]"
               />
             </div>
           </div>

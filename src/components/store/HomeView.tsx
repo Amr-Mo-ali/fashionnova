@@ -41,7 +41,6 @@ type Props = {
   products: Product[]
   initialCategory: string
 }
-
 export default function HomeView({ products, initialCategory }: Props) {
   const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
@@ -62,88 +61,90 @@ export default function HomeView({ products, initialCategory }: Props) {
   }
 
   return (
-    <div className="flex flex-col">
-      <section className="relative flex min-h-[calc(100dvh-4.25rem)] flex-col items-center justify-center overflow-hidden border-b border-[#b8976a]/35 bg-[#f5f2ed] px-4 pb-16 pt-8 sm:px-8 sm:pb-20">
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,rgba(212,184,150,0.34),transparent_55%)]"
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_55%,rgba(184,151,106,0.14),transparent_42%)]" />
-        <div
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(165deg,rgba(184,151,106,0.08)_0%,transparent_38%,transparent_62%,rgba(184,151,106,0.06)_100%)]"
-          aria-hidden
-        />
+    <div className="flex flex-col overflow-hidden">
+      <section className="relative isolate min-h-[calc(100dvh-5.5rem)] overflow-hidden bg-[var(--cream)] px-4 pt-24 sm:px-8 lg:px-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(184,151,106,0.14),transparent_35%)]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_85%,rgba(15,14,13,0.03)_100%)]" aria-hidden="true" />
 
-        <div className="relative z-10 mx-auto max-w-4xl px-2 text-center">
-          <motion.p
-            custom={0}
-            variants={heroLine}
-            initial="hidden"
-            animate="show"
-            className="mb-8 text-xs font-medium uppercase tracking-[0.38em] text-[#b8976a]"
-          >
-            Est. 2024 · Cairo
-          </motion.p>
-          <motion.h1
-            custom={1}
-            variants={heroLine}
-            initial="hidden"
-            animate="show"
-            className="font-[family-name:var(--font-playfair),serif] text-5xl font-medium leading-[1.08] tracking-tight text-[#0f0e0d] sm:text-7xl md:text-8xl"
-          >
-            Refined
-            <br />
-            <span className="text-[#7a7068]">for the</span> bold
-          </motion.h1>
-          <motion.p
-            custom={2}
-            variants={heroLine}
-            initial="hidden"
-            animate="show"
-            className="mx-auto mt-10 max-w-lg text-base leading-[1.75] text-[#7a7068] sm:text-lg"
-          >
-            Curated silhouettes, uncompromising craft. Discover pieces designed to move with you
-            from dusk to dawn.
-          </motion.p>
-          <motion.div
-            custom={3}
-            variants={heroLine}
-            initial="hidden"
-            animate="show"
-            className="mt-14"
-          >
-            <Link
-              href="#products"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-none bg-[#0f0e0d] px-12 py-3.5 text-sm font-semibold uppercase tracking-[0.22em] text-[#f5f2ed] transition hover:bg-[#1a1816] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b8976a]"
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div className="max-w-2xl py-20 lg:py-24">
+            <motion.p
+              custom={0}
+              variants={heroLine}
+              initial="hidden"
+              animate="show"
+              className="mb-8 text-[11px] font-semibold uppercase tracking-[0.25em] text-[var(--gold)]"
             >
-              Shop collection
-            </Link>
-          </motion.div>
+              Est. 2024 · Cairo
+            </motion.p>
+            <motion.h1
+              custom={1}
+              variants={heroLine}
+              initial="hidden"
+              animate="show"
+              className="font-[family-name:var(--font-cormorant),serif] text-[3.75rem] leading-[0.95] tracking-[-0.03em] text-[var(--ink)] sm:text-[5rem] md:text-[6.5rem]"
+            >
+              Dressed
+              <br />
+              <span className="italic text-[var(--ink)]/85">for the bold</span>
+            </motion.h1>
+            <motion.p
+              custom={2}
+              variants={heroLine}
+              initial="hidden"
+              animate="show"
+              className="mt-10 max-w-xl text-base leading-[1.85] text-[var(--muted)] sm:text-lg"
+            >
+              Curated silhouettes, refined materials, and quiet luxury designed for those who move
+              with confidence.
+            </motion.p>
+            <motion.div
+              custom={3}
+              variants={heroLine}
+              initial="hidden"
+              animate="show"
+              className="mt-14"
+            >
+              <a
+                href="#products"
+                className="inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--ink)] px-12 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-[var(--cream)] transition hover:bg-[var(--gold)]"
+              >
+                Shop collection
+              </a>
+            </motion.div>
+          </div>
+
+          <div className="relative hidden lg:block">
+            <div className="relative overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--panel)] px-6 py-6 shadow-[0_40px_80px_rgba(15,14,13,0.12)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,184,150,0.18),transparent_46%)]" />
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] bg-[var(--ink)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_35%,rgba(245,242,237,0.24),transparent_40%)]" />
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'><path d=\'M0 0h400v400H0z\' fill=\'%23e8e0d4\'/><path d=\'M0 100c100-50 200 50 300 0s100-100 100-100V400H0z\' fill=\'%23f5f2ed\' opacity=\'0.55\'/></svg>')] bg-cover opacity-40" />
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[rgba(15,14,13,0.72)] to-transparent" />
+                <div className="relative z-10 flex h-full items-center justify-center px-10">
+                  <div className="w-full max-w-[320px] rounded-[1.5rem] border border-[var(--gold)]/20 bg-[rgba(245,242,237,0.85)] px-8 py-12 text-center">
+                    <p className="text-xs uppercase tracking-[0.35em] text-[var(--muted)]">Editorial</p>
+                    <p className="mt-6 text-3xl font-[family-name:var(--font-cormorant),serif] leading-tight text-[var(--ink)]">
+                      The season collection
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          aria-hidden
-        >
-          <div className="flex h-10 w-6 justify-center rounded-full border border-[#b8976a]/60 pt-2">
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-              className="h-1.5 w-1 rounded-full bg-[#b8976a]"
-            />
+        <div className="absolute inset-x-0 bottom-10 flex justify-center">
+          <div className="flex h-12 w-8 flex-col items-center justify-between rounded-full border border-[var(--gold)]/40 p-1">
+            <span className="block h-1 w-full rounded-full bg-[var(--gold)] opacity-40" />
+            <span className="block h-1.5 w-1.5 rounded-full bg-[var(--gold)] animate-bounce" />
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      <div className="border-b border-[#b8976a]/35 bg-[#f5f2ed]">
-        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-8">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#7a7068]">
-            Shop by category
-          </p>
-          <div className="-mx-1 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden">
+      <div className="border-b border-[var(--border)] bg-[var(--cream)] px-4 py-6 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex gap-3 overflow-x-auto pb-1 sm:justify-start sm:overflow-visible [&::-webkit-scrollbar]:hidden">
             {SHOP_CATEGORY_CHIPS.map((cat) => {
               const active = selectedCategory === cat
               return (
@@ -151,10 +152,10 @@ export default function HomeView({ products, initialCategory }: Props) {
                   key={cat}
                   type="button"
                   onClick={() => selectCategory(cat)}
-                  className={`min-h-[44px] shrink-0 snap-start border px-5 py-2.5 text-sm font-medium tracking-wide transition sm:min-h-0 ${
+                  className={`min-h-[44px] shrink-0 rounded-full border px-5 text-sm uppercase tracking-[0.25em] transition focus:outline-none ${
                     active
-                      ? 'border-[#b8976a] bg-[#d4b896]/20 text-[#b8976a] shadow-[0_0_20px_rgba(184,151,106,0.16)]'
-                      : 'border-[#0f0e0d]/55 bg-[#f5f2ed] text-[#0f0e0d] hover:border-[#b8976a] hover:text-[#b8976a]'
+                      ? 'border-transparent bg-[var(--ink)] text-[var(--cream)] shadow-[0_16px_50px_rgba(15,14,13,0.08)]'
+                      : 'border-[var(--border)] bg-transparent text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--ink)]'
                   }`}
                 >
                   {cat}
@@ -165,10 +166,7 @@ export default function HomeView({ products, initialCategory }: Props) {
         </div>
       </div>
 
-      <section
-        id="products"
-        className="mx-auto max-w-7xl scroll-mt-[4.5rem] px-4 py-24 sm:px-8 sm:py-32"
-      >
+      <section id="products" className="mx-auto max-w-7xl scroll-mt-[4.5rem] px-4 py-24 sm:px-8 sm:py-32">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -177,37 +175,33 @@ export default function HomeView({ products, initialCategory }: Props) {
           className="mb-16 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.32em] text-[#b8976a]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--gold)]">
               The edit
             </p>
-            <h2 className="mt-4 font-[family-name:var(--font-playfair),serif] text-3xl font-medium leading-tight text-[#0f0e0d] sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 font-[family-name:var(--font-cormorant),serif] text-3xl leading-tight text-[var(--ink)] sm:text-4xl md:text-5xl">
               New arrivals
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-[#7a7068]">
+          <p className="max-w-sm text-sm leading-[1.85] text-[var(--muted)]">
             Each piece selected for texture, drape, and presence.
           </p>
         </motion.div>
 
         {products.length === 0 ? (
-          <p className="rounded-none border border-[#b8976a]/40 bg-[#ffffff] py-24 text-center text-[#7a7068]">
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
             The collection will appear here soon.
-          </p>
+          </div>
         ) : filteredProducts.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="rounded-none border border-[#b8976a]/40 bg-[#ffffff] py-20 text-center"
-          >
-            <p className="text-[#7a7068]">No pieces in this category yet.</p>
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
+            <p>No pieces in this category yet.</p>
             <button
               type="button"
               onClick={() => selectCategory('All')}
-              className="mt-6 text-sm font-medium text-[#b8976a] underline-offset-4 hover:underline"
+              className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-[0.25em] text-[var(--gold)]"
             >
               View all
             </button>
-          </motion.div>
+          </div>
         ) : (
           <AnimatePresence mode="wait">
             <motion.div
