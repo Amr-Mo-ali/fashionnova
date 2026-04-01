@@ -159,7 +159,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                     className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition ${
                       color === c ? 'border-[var(--nav)]' : 'border-transparent'
                     }`}
-                    style={{ backgroundColor: c.toLowerCase() ; '#EEE' }}
+                    style={{ backgroundColor: c.toLowerCase() || '#EEE' }}
                     aria-label={c}
                   />
                 ))}
