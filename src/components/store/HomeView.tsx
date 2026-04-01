@@ -73,7 +73,7 @@ export default function HomeView({ products, initialCategory }: Props) {
               variants={heroLine}
               initial="hidden"
               animate="show"
-              className="mb-8 text-[11px] font-semibold uppercase tracking-[0.25em] text-[var(--gold)]"
+              className="mb-8 text-[11px] uppercase tracking-[0.15em] text-[#999]"
             >
               Est. 2024 · Cairo
             </motion.p>
@@ -107,7 +107,7 @@ export default function HomeView({ products, initialCategory }: Props) {
             >
               <a
                 href="#products"
-                className="inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--ink)] px-12 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-[var(--cream)] transition hover:bg-[var(--gold)]"
+                className="btn-primary text-sm"
               >
                 Shop collection
               </a>
@@ -115,15 +115,15 @@ export default function HomeView({ products, initialCategory }: Props) {
           </div>
 
           <div className="relative hidden lg:block">
-            <div className="relative overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--panel)] px-6 py-6 shadow-[0_40px_80px_rgba(15,14,13,0.12)]">
+            <div className="relative overflow-hidden rounded-[4px] border border-[var(--border)] bg-[var(--panel)] px-6 py-6 shadow-[0_40px_80px_rgba(15,14,13,0.12)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,184,150,0.18),transparent_46%)]" />
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] bg-[var(--ink)]">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[4px] bg-[var(--ink)]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_35%,rgba(245,242,237,0.24),transparent_40%)]" />
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'><path d=\'M0 0h400v400H0z\' fill=\'%23e8e0d4\'/><path d=\'M0 100c100-50 200 50 300 0s100-100 100-100V400H0z\' fill=\'%23f5f2ed\' opacity=\'0.55\'/></svg>')] bg-cover opacity-40" />
                 <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[rgba(15,14,13,0.72)] to-transparent" />
                 <div className="relative z-10 flex h-full items-center justify-center px-10">
-                  <div className="w-full max-w-[320px] rounded-[1.5rem] border border-[var(--gold)]/20 bg-[rgba(245,242,237,0.85)] px-8 py-12 text-center">
-                    <p className="text-xs uppercase tracking-[0.35em] text-[var(--muted)]">Editorial</p>
+                  <div className="w-full max-w-[320px] rounded-[4px] border border-[var(--gold)]/20 bg-[rgba(245,242,237,0.85)] px-8 py-12 text-center">
+                    <p className="text-[10px] uppercase tracking-[0.15em] text-[#999]">Editorial</p>
                     <p className="mt-6 text-3xl font-[family-name:var(--font-cormorant),serif] leading-tight text-[var(--ink)]">
                       The season collection
                     </p>
@@ -152,11 +152,7 @@ export default function HomeView({ products, initialCategory }: Props) {
                   key={cat}
                   type="button"
                   onClick={() => selectCategory(cat)}
-                  className={`min-h-[44px] shrink-0 rounded-full border px-5 text-sm uppercase tracking-[0.25em] transition focus:outline-none ${
-                    active
-                      ? 'border-transparent bg-[var(--ink)] text-[var(--cream)] shadow-[0_16px_50px_rgba(15,14,13,0.08)]'
-                      : 'border-[var(--border)] bg-transparent text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--ink)]'
-                  }`}
+                  className={`category-chip ${active ? 'category-chip-active' : 'category-chip-inactive'}`}
                 >
                   {cat}
                 </button>
@@ -188,11 +184,11 @@ export default function HomeView({ products, initialCategory }: Props) {
         </motion.div>
 
         {products.length === 0 ? (
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
+          <div className="rounded-[4px] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
             The collection will appear here soon.
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
+          <div className="rounded-[4px] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
             <p>No pieces in this category yet.</p>
             <button
               type="button"

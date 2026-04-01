@@ -1,17 +1,23 @@
 import { CartProvider } from "@/components/store/CartProvider";
 import type { Metadata } from "next";
-import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { Cormorant_Garamond, Inter, Cairo } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-inter",
   display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-cormorant",
+  display: "swap",
+});
+
+const cairo = Cairo({
+  subsets: ["latin", "arabic"],
+  variable: "--font-cairo",
   display: "swap",
 });
 
@@ -28,11 +34,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${inter.variable} ${cormorant.variable} ${cairo.variable} h-full antialiased`}
     >
-      <body
-        className={`${dmSans.className} flex min-h-full flex-col bg-[var(--cream)] text-[var(--ink)]`}
-      >
+      <body className={`${inter.className} flex min-h-full flex-col bg-[var(--cream)] text-[var(--ink)]`}>
         <CartProvider>{children}</CartProvider>
       </body>
     </html>

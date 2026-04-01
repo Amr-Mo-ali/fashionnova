@@ -8,6 +8,10 @@ import { useMemo, useState } from 'react'
 import { useCart } from './CartProvider'
 import ProductImage from './ProductImage'
 
+function isArabicText(text: string) {
+  return /[؀-ۿ]/.test(text)
+}
+
 export default function ProductDetailForm({ product }: { product: Product }) {
   const router = useRouter()
   const { addLine, openCartDrawer } = useCart()
@@ -45,10 +49,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
     setTimeout(() => setAdded(false), 2000)
   }
 
-  const chipActive =
-    'border-[var(--gold)] bg-[var(--gold-light)]/25 text-[var(--gold)]'
-  const chipIdle =
-    'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--ink)]'
+  const isArabic = isArabicText(product.description)
 
   return (
     <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:items-start">
@@ -57,19 +58,17 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
       >
-        <nav aria-label="Breadcrumb" className="text-[11px] uppercase tracking-[0.3em] text-[var(--muted)]">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link href="/" className="transition hover:text-[var(--ink)]">
-                Home
-              </Link>
-            </li>
-            <li>/</li>
-            <li className="text-[var(--ink)]">{product.category}</li>
-          </ol>
+        <nav aria-label="Breadcrumb" className="text-[12px] uppercase tracking-[0.15em] text-[#999]">
+          <p>
+            <Link href="/" className="transition hover:text-[var(--ink)]">
+              Home
+            </Link>{' '}
+            <span className="mx-2">·</span>
+            <span className="text-[var(--ink)]">{product.category}</span>
+          </p>
         </nav>
 
-        <div className="mt-6 overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--white)] shadow-[0_24px_60px_rgba(15,14,13,0.1)]">
+        <div className="mt-6 overflow-hidden rounded-[4px] border border-[var(--border)] bg-[var(--white)] shadow-[0_24px_60px_rgba(15,14,13,0.1)]">
           <ProductImage
             src={selectedImage}
             alt={product.name}
@@ -84,7 +83,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                 key={src}
                 type="button"
                 onClick={() => setSelectedImage(src)}
-                className={`overflow-hidden rounded-xl border p-1 transition ${
+                className={`overflow-hidden rounded-[4px] border p-1 transition ${
                   selectedImage === src
                     ? 'border-[var(--gold)]'
                     : 'border-[var(--border)] hover:border-[var(--gold)]'
@@ -93,7 +92,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                 <ProductImage
                   src={src}
                   alt={`${product.name} thumbnail`}
-                  className="aspect-[4/5] w-full"
+                  className="aspect-[3/4] w-full"
                 />
               </button>
             ))}
@@ -107,7 +106,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] as const }}
       >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--gold)]">
+        <p className="text-[11px] uppercase tracking-[0.15em] text-[#999]">
           {product.category}
         </p>
         <h1 className="mt-5 font-[family-name:var(--font-cormorant),serif] text-4xl leading-tight text-[var(--ink)] sm:text-5xl md:text-6xl">
@@ -116,7 +115,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         <p className="mt-6 text-3xl font-semibold text-[var(--gold)]">
           EGP {product.price.toLocaleString()}
         </p>
-        <p className="mt-8 text-base leading-[1.85] text-[var(--muted)]">
+        <p className={`mt-8 text-base leading-[1.8] text-[var(--muted)] ${isArabic ? 'arabic' : ''}`}>
           {product.description}
         </p>
         <p className="mt-6 text-sm uppercase tracking-[0.22em] text-[var(--muted)]">
@@ -136,7 +135,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                     type="button"
                     onClick={() => setSize(s)}
                     className={`min-h-[44px] rounded-none border px-5 py-3 text-sm font-medium transition ${
-                      size === s ? chipActive : chipIdle
+                      size === s ? 'border-[var(--nav)] bg-[var(--nav)]/10 text-[var(--ink)]' : 'border-[var(--border)] text-[var(--ink)] hover:border-[var(--gold)]'
                     }`}
                   >
                     {s}
@@ -157,12 +156,12 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                     key={c}
                     type="button"
                     onClick={() => setColor(c)}
-                    className={`min-h-[44px] rounded-none border px-5 py-3 text-sm font-medium transition ${
-                      color === c ? chipActive : chipIdle
+                    className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition ${
+                      color === c ? 'border-[var(--nav)]' : 'border-transparent'
                     }`}
-                  >
-                    {c}
-                  </button>
+                    style={{ backgroundColor: c.toLowerCase() ; '#EEE' }}
+                    aria-label={c}
+                  />
                 ))}
               </div>
             </div>
@@ -177,7 +176,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                 type="button"
                 aria-label="Decrease quantity"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="flex h-11 w-11 items-center justify-center rounded-none border border-[var(--border)] text-[var(--ink)] transition hover:border-[var(--gold)]"
+                className="flex h-10 w-10 items-center justify-center rounded-none border border-[var(--border)] text-[var(--ink)] transition hover:border-[var(--gold)]"
               >
                 −
               </button>
@@ -197,36 +196,40 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                 type="button"
                 aria-label="Increase quantity"
                 onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                className="flex h-11 w-11 items-center justify-center rounded-none border border-[var(--border)] text-[var(--ink)] transition hover:border-[var(--gold)]"
+                className="flex h-10 w-10 items-center justify-center rounded-none border border-[var(--border)] text-[var(--ink)] transition hover:border-[var(--gold)]"
               >
                 +
               </button>
             </div>
           </div>
 
+          {product.stock < 1 ? (
+            <div className="pill-badge">Out of stock</div>
+          ) : null}
+
           <div className="grid gap-4 sm:grid-cols-[1.2fr_0.8fr]">
             <button
               type="button"
               disabled={!canAdd}
               onClick={handleAddToCart}
-              className="min-h-[52px] rounded-none border border-[var(--ink)] bg-[var(--ink)] px-10 py-3.5 text-sm font-semibold uppercase tracking-[0.22em] text-[var(--cream)] transition hover:bg-[var(--gold)] disabled:cursor-not-allowed disabled:border-[var(--border)] disabled:bg-[var(--border)] disabled:text-[var(--muted)]"
+              className="w-full min-h-[48px] rounded-none bg-[var(--nav)] px-6 text-sm uppercase tracking-[0.15em] text-[var(--white)] transition hover:bg-[var(--gold)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {added ? 'Added to bag' : 'Add to bag'}
             </button>
             <button
               type="button"
               onClick={() => router.push('/cart')}
-              className="min-h-[52px] rounded-none border border-[var(--border)] px-10 py-3.5 text-sm font-semibold uppercase tracking-[0.22em] text-[var(--ink)] transition hover:border-[var(--gold)]"
+              className="w-full min-h-[48px] rounded-none border border-[var(--nav)] bg-transparent px-6 text-sm uppercase tracking-[0.15em] text-[var(--nav)] transition hover:bg-[var(--nav)]/5"
             >
               View bag
             </button>
           </div>
 
-          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--white)] p-6">
-            <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">Shipping</p>
-            <p className="mt-3 text-sm leading-[1.8] text-[var(--muted)]">
-              Complimentary express delivery on all orders. Returns accepted within 14 days of receipt.
-            </p>
+          <div className="border-t border-[var(--border)] pt-6">
+            <div className="info-bar">
+              <span className="text-base">ℹ️</span>
+              <span>Complimentary express delivery on all orders.</span>
+            </div>
           </div>
         </div>
       </motion.div>

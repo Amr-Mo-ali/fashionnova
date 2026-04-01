@@ -58,7 +58,7 @@ export default function CartDrawer() {
             <div className="flex items-center justify-between border-b border-[#3D252F]/80 px-6 py-5">
               <h2
                 id="cart-drawer-title"
-                className="font-[family-name:var(--font-playfair),serif] text-xl font-semibold tracking-wide text-[#FAF6F1]"
+                className="font-[family-name:var(--font-cormorant),serif] text-xl font-semibold tracking-wide text-[#FAF6F1]"
               >
                 Your bag
                 {itemCount > 0 ? (

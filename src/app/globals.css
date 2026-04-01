@@ -1,24 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0f0e0d;
-  --cream: #f5f2ed;
-  --warm: #e8e0d4;
-  --gold: #b8976a;
-  --gold-light: #d4b896;
-  --muted: #7a7068;
-  --panel: #1a1816;
-  --white: #ffffff;
-  --border: rgba(184, 151, 106, 0.2);
+  --nav: #0A0F2C;
+  --gold: #C9A84C;
+  --cream: #F9F7F4;
+  --bg: #F9F7F4;
+  --ink: #1A1A1A;
+  --muted: #6B6B6B;
+  --white: #FFFFFF;
+  --border: #D9D5CC;
+  --panel: #0D0D0D;
+  --radius: 4px;
 }
 
 @theme inline {
-  --color-background: var(--cream);
+  --color-background: var(--bg);
   --color-foreground: var(--ink);
-  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
   --color-accent: var(--gold);
-  --color-accent-muted: rgba(184, 151, 106, 0.12);
+  --color-accent-muted: rgba(201, 168, 76, 0.12);
 }
 
 html {
@@ -26,9 +27,9 @@ html {
 }
 
 body {
-  background: var(--cream);
-  color: var(--ink);
   font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
 }
 
 * {
@@ -48,7 +49,7 @@ a {
 }
 
 ::selection {
-  background: rgba(184, 151, 106, 0.25);
+  background: rgba(201, 168, 76, 0.24);
   color: var(--ink);
 }
 
@@ -69,15 +70,127 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+legend {
+  font-family: var(--font-display);
+}
+
+.arabic {
+  font-family: var(--font-cairo), sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+.badge-label {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 10px;
+  color: var(--gold);
+}
+
+.category-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: all 0.2s ease;
+}
+
+.category-chip-active {
+  background: var(--nav);
+  color: var(--white);
+  border-color: var(--nav);
+}
+
+.category-chip-inactive {
+  background: transparent;
+  color: var(--nav);
+  border-color: #ccc;
+}
+
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  height: 24px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: #F3F0EB;
+  color: #999;
+}
+
+.info-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #F3F0EB;
+  color: var(--muted);
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 32px;
+  border-radius: 0;
+  background: var(--nav);
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--gold);
+  color: var(--nav);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 32px;
+  border-radius: 0;
+  border: 1px solid var(--nav);
+  background: transparent;
+  color: var(--nav);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  transition: border 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.btn-ghost:hover {
+  background: rgba(10, 15, 44, 0.06);
+}
+
 @layer base {
   html {
     color-scheme: light;
-  }
-
-  body {
-    min-height: 100vh;
-    background: var(--cream);
-    color: var(--ink);
   }
 
   body,

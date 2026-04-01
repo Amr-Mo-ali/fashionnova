@@ -34,30 +34,37 @@ export default function StoreHeader() {
         initial={{ y: -12, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as const }}
-        className={`fixed inset-x-0 top-0 z-50 border-b border-[var(--gold)]/20 bg-[var(--cream)]/95 backdrop-blur-md transition-all duration-300 ${
-          scrolled ? 'py-3 shadow-[0_18px_48px_rgba(15,14,13,0.08)]' : 'py-4'
+        className={`fixed inset-x-0 top-0 z-50 border-b border-[#EBEBEB] bg-[var(--cream)]/98 backdrop-blur-md ${
+          scrolled ? 'shadow-[0_18px_48px_rgba(15,14,13,0.08)]' : ''
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-8">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-8">
           <Link
             href="/"
-            className="font-[family-name:var(--font-cormorant),serif] text-lg uppercase tracking-[0.28em] text-[var(--ink)] sm:text-xl"
+            className="font-[family-name:var(--font-cormorant),serif] text-base uppercase tracking-[0.3em] text-[var(--ink)]"
           >
             Fashion<span className="text-[var(--gold)]">Nova</span>
           </Link>
 
-          <div className="hidden items-center gap-6 sm:flex">
+          <div className="hidden items-center gap-8 sm:flex">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href || (link.href === '/' && pathname === '/')
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-[11px] uppercase tracking-[0.22em] transition ${
-                    active ? 'text-[var(--ink)]' : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                  className={`relative text-[12px] uppercase tracking-[0.25em] transition ${
+                    active
+                      ? 'text-[var(--ink)] after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:bg-[var(--gold)]'
+                      : 'text-[var(--muted)] hover:text-[var(--ink)]'
                   }`}
                 >
                   {link.label}
+                  {link.href === '/cart' && itemCount > 0 ? (
+                    <span className="ml-2 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--nav)] px-2 text-[10px] font-semibold text-[var(--white)]">
+                      {itemCount > 99 ? '99+' : itemCount}
+                    </span>
+                  ) : null}
                 </Link>
               )
             })}
@@ -79,7 +86,7 @@ export default function StoreHeader() {
                 />
               </svg>
               {itemCount > 0 ? (
-                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-none bg-[var(--gold)] px-1 text-[10px] font-bold text-[var(--ink)]">
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--gold)] px-1 text-[10px] font-bold text-[var(--nav)]">
                   {itemCount > 99 ? '99+' : itemCount}
                 </span>
               ) : null}
@@ -137,7 +144,7 @@ export default function StoreHeader() {
                 <button
                   type="button"
                   onClick={openCartDrawer}
-                  className="inline-flex min-h-[48px] w-full items-center justify-center rounded-none border border-[var(--gold)] bg-[var(--gold)] px-6 py-3 uppercase tracking-[0.25em] text-[var(--ink)] transition hover:bg-[var(--gold-light)]"
+                  className="inline-flex min-h-[48px] w-full items-center justify-center rounded-none border border-[var(--gold)] bg-[var(--gold)] px-6 py-3 uppercase tracking-[0.25em] text-[var(--nav)] transition hover:bg-[var(--gold-light)]"
                 >
                   View bag
                 </button>

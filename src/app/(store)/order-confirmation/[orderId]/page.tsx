@@ -32,7 +32,7 @@ export default async function OrderConfirmationPage({ params }: PageProps) {
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#C8728A]">
             Confirmed
           </p>
-          <h1 className="mt-4 font-[family-name:var(--font-playfair),serif] text-4xl font-medium text-[#FAF6F1]">
+          <h1 className="mt-4 font-[family-name:var(--font-cormorant),serif] text-4xl font-medium text-[#FAF6F1]">
             Thank you
           </h1>
           <p className="mt-4 leading-relaxed text-[#8C6070]">
@@ -55,7 +55,7 @@ export default async function OrderConfirmationPage({ params }: PageProps) {
           </dl>
 
           <div className="mt-10 border-t border-[#3D252F]/80 pt-10">
-            <h2 className="font-[family-name:var(--font-playfair),serif] text-lg font-medium text-[#FAF6F1]">
+            <h2 className="font-[family-name:var(--font-cormorant),serif] text-lg font-medium text-[#FAF6F1]">
               Your pieces
             </h2>
             <ul className="mt-5 space-y-4">
@@ -76,7 +76,7 @@ export default async function OrderConfirmationPage({ params }: PageProps) {
                 </li>
               ))}
             </ul>
-            <div className="mt-8 space-y-4 border-t border-[#3D252F]/80 pt-8 font-[family-name:var(--font-playfair),serif] text-xl text-[#FAF6F1]">
+            <div className="mt-8 space-y-4 border-t border-[#3D252F]/80 pt-8 font-[family-name:var(--font-cormorant),serif] text-xl text-[#FAF6F1]">
               <div className="flex justify-between text-base">
                 <span className="text-[#8C6070]">Deposit (10% of highest item)</span>
                 <span className="text-[#C8728A]">EGP {deposit.toLocaleString()}</span>

@@ -77,9 +77,9 @@ export default function CheckoutPage() {
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-[#3D252F]/80 bg-[#23151c]/40 p-16 text-center"
+          className="rounded-[4px] border border-[#3D252F]/80 bg-[#23151c]/40 p-16 text-center"
         >
-          <h1 className="font-[family-name:var(--font-playfair),serif] text-3xl text-[#FAF6F1]">
+          <h1 className="font-[family-name:var(--font-cormorant),serif] text-3xl text-[#FAF6F1]">
             Checkout
           </h1>
           <p className="mt-4 text-[#8C6070]">Your cart is empty.</p>
@@ -107,7 +107,7 @@ export default function CheckoutPage() {
         transition={{ duration: 0.4 }}
       >
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#C8728A]">Secure</p>
-        <h1 className="mt-4 font-[family-name:var(--font-playfair),serif] text-4xl font-medium leading-tight text-[#FAF6F1] md:text-5xl">
+        <h1 className="mt-4 font-[family-name:var(--font-cormorant),serif] text-4xl font-medium leading-tight text-[#FAF6F1] md:text-5xl">
           Checkout
         </h1>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#8C6070]">
@@ -198,7 +198,7 @@ export default function CheckoutPage() {
               <p className="text-xs font-medium uppercase tracking-wider text-[#8C6070]">
                 Deposit required
               </p>
-              <p className="mt-2 font-[family-name:var(--font-playfair),serif] text-2xl text-[#C8728A]">
+              <p className="mt-2 font-[family-name:var(--font-cormorant),serif] text-2xl text-[#C8728A]">
                 EGP {depositLabel}
               </p>
             </div>
@@ -254,7 +254,7 @@ export default function CheckoutPage() {
           transition={{ duration: 0.45, delay: 0.1 }}
           className="h-fit rounded-2xl border border-[#3D252F]/80 bg-[#23151c]/50 p-8 lg:col-span-2 lg:sticky lg:top-28"
         >
-          <h2 className="font-[family-name:var(--font-playfair),serif] text-xl font-medium text-[#FAF6F1]">
+          <h2 className="font-[family-name:var(--font-cormorant),serif] text-xl font-medium text-[#FAF6F1]">
             Order summary
           </h2>
           <ul className="mt-8 space-y-4 border-b border-[#3D252F]/80 pb-8">
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
               </li>
             ))}
           </ul>
-          <div className="mt-8 flex justify-between font-[family-name:var(--font-playfair),serif] text-lg text-[#FAF6F1]">
+          <div className="mt-8 flex justify-between font-[family-name:var(--font-cormorant),serif] text-lg text-[#FAF6F1]">
             <span>Total</span>
             <span className="text-[#C8728A]">EGP {subtotal.toLocaleString()}</span>
           </div>

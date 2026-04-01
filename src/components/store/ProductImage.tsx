@@ -24,15 +24,11 @@ export default function ProductImage({
   if (!resolved) {
     return (
       <div
-        className={`flex items-center justify-center bg-[#1a1816] text-sm text-[#7a7068] ${className}`}
+        className={`flex items-center justify-center bg-[#EEEBE6] text-sm text-[#6B6B6B] ${className}`}
       >
-        No image
+        <span className="font-semibold uppercase tracking-[0.25em]">FN</span>
       </div>
     )
-  }
-
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[ProductImage]', { raw: src, resolved })
   }
 
   return (
