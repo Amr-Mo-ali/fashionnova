@@ -1,6 +1,6 @@
 'use client'
 
-import type { Product } from '@prisma/client'
+import type { Collection, Product } from '@prisma/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -39,9 +39,10 @@ const heroLine = {
 
 type Props = {
   products: Product[]
+  collections: Collection[]
   initialCategory: string
 }
-export default function HomeView({ products, initialCategory }: Props) {
+export default function HomeView({ products, collections, initialCategory }: Props) {
   const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
 
@@ -141,6 +142,56 @@ export default function HomeView({ products, initialCategory }: Props) {
           </div>
         </div>
       </section>
+
+      {collections.length > 0 ? (
+        <section className="bg-[var(--cream)] px-4 py-16 sm:px-8 lg:px-0">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.18em] text-[#999]">Collections</p>
+                <h2 className="mt-4 font-[family-name:var(--font-cormorant),serif] text-3xl leading-tight text-[var(--ink)]">
+                  Curated edits for every look
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {collections.map((collection) => (
+                <Link
+                  key={collection.id}
+                  href={`/collections/${collection.slug}`}
+                  className="group overflow-hidden rounded-[4px] border border-[var(--border)] bg-white transition hover:-translate-y-1"
+                >
+                  <div className="h-56 overflow-hidden bg-zinc-900">
+                    {collection.image ? (
+                      <img
+                        src={collection.image}
+                        alt={collection.name}
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-zinc-900 text-sm uppercase tracking-[0.2em] text-zinc-400">
+                        {collection.name}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#999]">Collection</p>
+                    <h3 className="mt-3 text-xl font-semibold text-[var(--ink)]">
+                      {collection.name}
+                    </h3>
+                    {collection.description ? (
+                      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                        {collection.description}
+                      </p>
+                    ) : null}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <div className="border-b border-[var(--border)] bg-[var(--cream)] px-4 py-6 sm:px-8">
         <div className="mx-auto max-w-7xl">

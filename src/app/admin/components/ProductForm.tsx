@@ -229,8 +229,8 @@ export default function ProductForm({ product }: Props) {
       <div>
         <span className="mb-2 block text-sm text-zinc-400">Images</span>
         <p className="mb-3 text-xs text-zinc-500">
-          Upload files (saved under /public/uploads) or add an external URL. First image is the
-          main photo on the store.
+          Upload files (saved to Cloudinary when configured) or add an external URL. First image is
+          the main photo on the store.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">

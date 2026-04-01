@@ -1,5 +1,5 @@
 import { headers } from 'next/headers'
-import type { Product } from '@prisma/client'
+import type { Collection, Product } from '@prisma/client'
 
 async function internalOrigin(): Promise<string | null> {
   const h = await headers()
@@ -27,4 +27,12 @@ export async function fetchProductFromApi(id: string): Promise<Product | null> {
   if (res.status === 404) return null
   if (!res.ok) return null
   return res.json() as Promise<Product>
+}
+
+export async function fetchCollectionsFromApi(): Promise<Collection[]> {
+  const origin = await internalOrigin()
+  if (!origin) return []
+  const res = await fetch(`${origin}/api/collections`, { cache: 'no-store' })
+  if (!res.ok) return []
+  return res.json() as Promise<Collection[]>
 }

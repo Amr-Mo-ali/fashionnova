@@ -1,5 +1,5 @@
 import HomeView from '@/components/store/HomeView'
-import { fetchProductsFromApi } from '@/lib/store-api'
+import { fetchCollectionsFromApi, fetchProductsFromApi } from '@/lib/store-api'
 import { normalizeCategoryParam } from '@/lib/shop-categories'
 
 type PageProps = {
@@ -7,9 +7,18 @@ type PageProps = {
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
-  const products = await fetchProductsFromApi()
+  const [products, collections] = await Promise.all([
+    fetchProductsFromApi(),
+    fetchCollectionsFromApi(),
+  ])
   const sp = (await searchParams) ?? {}
   const initialCategory = normalizeCategoryParam(sp.category)
 
-  return <HomeView products={products} initialCategory={initialCategory} />
+  return (
+    <HomeView
+      products={products}
+      collections={collections}
+      initialCategory={initialCategory}
+    />
+  )
 }

@@ -3,6 +3,10 @@ import { mkdir, writeFile } from 'fs/promises'
 import { NextResponse } from 'next/server'
 import path from 'path'
 import { requireAdminSession } from '@/lib/api-auth'
+import {
+  cloudinaryConfigured,
+  uploadImageToCloudinary,
+} from '@/lib/cloudinary'
 
 export const runtime = 'nodejs'
 
@@ -49,6 +53,18 @@ export async function POST(request: Request) {
   const buffer = Buffer.from(await file.arrayBuffer())
   if (buffer.length > MAX_BYTES) {
     return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 })
+  }
+
+  if (cloudinaryConfigured()) {
+    try {
+      const result = await uploadImageToCloudinary(buffer)
+      return NextResponse.json({ url: result.secure_url ?? result.url })
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Upload failed. Please check Cloudinary configuration.' },
+        { status: 500 }
+      )
+    }
   }
 
   const dir = path.join(process.cwd(), 'public', 'uploads')
