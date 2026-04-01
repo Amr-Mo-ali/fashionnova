@@ -1,15 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-import { useMemo } from 'react'
-
-function resolveImageSrc(src: string): string {
-  const trimmed = src.trim()
-  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed
-  if (trimmed.startsWith('/')) return trimmed
-  return `/${trimmed.replace(/^\/+/, '')}`
-}
-
 export default function ProductImage({
   src,
   alt,
@@ -19,28 +9,20 @@ export default function ProductImage({
   alt: string
   className?: string
 }) {
-  const resolved = useMemo(() => (src ? resolveImageSrc(src) : null), [src])
-
-  if (!resolved) {
+  if (!src) {
     return (
-      <div
-        className={`flex items-center justify-center bg-[#EEEBE6] text-sm text-[#6B6B6B] ${className}`}
-      >
-        <span className="font-semibold uppercase tracking-[0.25em]">FN</span>
+      <div className={`flex items-center justify-center bg-zinc-800 text-sm text-zinc-500 ${className}`}>
+        No image
       </div>
     )
   }
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
-      <Image
-        src={resolved}
-        alt={alt}
-        fill
-        unoptimized
-        className="object-cover"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      />
-    </div>
+    <img
+      src={src}
+      alt={alt}
+      className={`object-cover ${className}`}
+      loading="lazy"
+    />
   )
 }

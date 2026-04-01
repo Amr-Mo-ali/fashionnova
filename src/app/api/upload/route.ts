@@ -1,23 +1,13 @@
-import { randomUUID } from 'crypto'
-import { mkdir, writeFile } from 'fs/promises'
 import { NextResponse } from 'next/server'
-import path from 'path'
 import { requireAdminSession } from '@/lib/api-auth'
-import {
-  cloudinaryConfigured,
-  uploadImageToCloudinary,
-} from '@/lib/cloudinary'
+import { uploadToCloudinary } from '@/lib/cloudinary'
 
 export const runtime = 'nodejs'
 
-const MAX_BYTES = 5 * 1024 * 1024
-
-const MIME_EXT: Record<string, string> = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/gif': '.gif',
-}
+const IMAGE_MAX_BYTES = 10 * 1024 * 1024
+const VIDEO_MAX_BYTES = 50 * 1024 * 1024
+const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+const VIDEO_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/webm'])
 
 export async function POST(request: Request) {
   const session = await requireAdminSession()
@@ -38,42 +28,47 @@ export async function POST(request: Request) {
   }
 
   const mime = file.type
-  const ext = MIME_EXT[mime]
-  if (!ext) {
+  const isImage = IMAGE_TYPES.has(mime)
+  const isVideo = VIDEO_TYPES.has(mime)
+
+  if (!isImage && !isVideo) {
     return NextResponse.json(
-      { error: 'Invalid type. Use JPEG, PNG, WebP, or GIF.' },
+      { error: 'Invalid type. Use JPEG, PNG, WebP, GIF, MP4, MOV, or WEBM.' },
       { status: 400 }
     )
   }
 
-  if (file.size > MAX_BYTES) {
-    return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 })
+  const maxBytes = isVideo ? VIDEO_MAX_BYTES : IMAGE_MAX_BYTES
+  if (file.size > maxBytes) {
+    return NextResponse.json(
+      {
+        error: `File too large (max ${isVideo ? '50MB' : '10MB'})`,
+      },
+      { status: 400 }
+    )
   }
 
   const buffer = Buffer.from(await file.arrayBuffer())
-  if (buffer.length > MAX_BYTES) {
-    return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 })
+  if (buffer.length > maxBytes) {
+    return NextResponse.json(
+      {
+        error: `File too large (max ${isVideo ? '50MB' : '10MB'})`,
+      },
+      { status: 400 }
+    )
   }
 
-  if (cloudinaryConfigured()) {
-    try {
-      const result = await uploadImageToCloudinary(buffer)
-      return NextResponse.json({ url: result.secure_url ?? result.url })
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Upload failed. Please check Cloudinary configuration.' },
-        { status: 500 }
-      )
-    }
+  try {
+    const result = await uploadToCloudinary(buffer, {
+      folder: 'fashionnova/products',
+      resource_type: isVideo ? 'video' : 'image',
+    })
+    return NextResponse.json({ url: result.secure_url })
+  } catch (error) {
+    console.error('Upload error:', error)
+    return NextResponse.json(
+      { error: 'Upload failed. Please check Cloudinary configuration.' },
+      { status: 500 }
+    )
   }
-
-  const dir = path.join(process.cwd(), 'public', 'uploads')
-  await mkdir(dir, { recursive: true })
-
-  const name = `${randomUUID()}${ext}`
-  const diskPath = path.join(dir, name)
-  await writeFile(diskPath, buffer)
-
-  const url = `/uploads/${name}`
-  return NextResponse.json({ url })
 }
