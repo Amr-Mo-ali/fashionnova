@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
-import { requireSession } from '@/lib/api-auth'
+import { requireAdminSession } from '@/lib/api-auth'
 
 const MIN_PASSWORD_LENGTH = 8
 
 export async function PATCH(request: Request) {
-  const session = await requireSession()
+  const session = await requireAdminSession()
   if (!session?.user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

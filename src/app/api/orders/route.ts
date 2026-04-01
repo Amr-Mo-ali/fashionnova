@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { requireSession } from '@/lib/api-auth'
+import { requireAdminSession } from '@/lib/api-auth'
 import { computeDepositFromUnitPrices } from '@/lib/order-deposit'
 
 export async function GET() {
-  const session = await requireSession()
+  const session = await requireAdminSession()
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -84,6 +84,10 @@ export async function POST(request: Request) {
     }
 
     const order = await prisma.$transaction(async (tx) => {
+      const productIds = items.map((line) => line.productId)
+      const products = await tx.product.findMany({ where: { id: { in: productIds } } })
+      const productMap = new Map(products.map((product) => [product.id, product]))
+
       let total = 0
       const orderLines: {
         productId: string
@@ -94,7 +98,7 @@ export async function POST(request: Request) {
       }[] = []
 
       for (const line of items) {
-        const product = await tx.product.findUnique({ where: { id: line.productId } })
+        const product = productMap.get(line.productId)
         if (!product) throw new Error('One or more products are no longer available')
         if (product.sizes.length > 0 && !product.sizes.includes(line.size)) throw new Error(`Invalid size for ${product.name}`)
         if (product.colors.length > 0 && !product.colors.includes(line.color)) throw new Error(`Invalid color for ${product.name}`)
@@ -127,10 +131,14 @@ export async function POST(request: Request) {
       })
 
       for (const line of items) {
-        await tx.product.update({
-          where: { id: line.productId },
+        const updateResult = await tx.product.updateMany({
+          where: { id: line.productId, stock: { gte: line.quantity } },
           data: { stock: { decrement: line.quantity } },
         })
+        if (updateResult.count === 0) {
+          const productName = productMap.get(line.productId)?.name ?? 'product'
+          throw new Error(`Not enough stock for ${productName}`)
+        }
       }
 
       return created
@@ -151,15 +159,33 @@ export async function POST(request: Request) {
         .filter((p): p is number => typeof p === 'number')
       const deposit = computeDepositFromUnitPrices(unitPrices)
       const message = `🛍️ New Order!\n👤 Customer: ${customerName}\n📞 Phone: ${phone}\n📍 Address: ${address}\n\n📦 Items:\n${itemsList}\n\n💰 Total: EGP ${total}\n\n💳 Deposit: EGP ${deposit} (10% of highest item)\nPay via 📱 Vodafone Cash or 💳 Instapay to 01024888895`
-      const encodedMessage = encodeURIComponent(message)
-      await fetch(`https://api.callmebot.com/whatsapp.php?phone=201024888895&text=${encodedMessage}&apikey=9145279`)
+      const whatsappPhone = process.env.WHATSAPP_PHONE
+      const whatsappApiKey = process.env.WHATSAPP_API_KEY
+      if (whatsappPhone && whatsappApiKey) {
+        const encodedMessage = encodeURIComponent(message)
+        await fetch(
+          `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(
+            whatsappPhone
+          )}&text=${encodedMessage}&apikey=${encodeURIComponent(whatsappApiKey)}`
+        )
+      }
     } catch {
       // don't block the order if notification fails
     }
 
     return NextResponse.json(order, { status: 201 })
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Could not place order'
-    return NextResponse.json({ error: message }, { status: 400 })
+    const safeErrors = [
+      'One or more products are no longer available',
+      'Invalid size for ',
+      'Invalid color for ',
+      'Not enough stock for ',
+    ]
+
+    if (e instanceof Error && safeErrors.some((prefix) => e.message.startsWith(prefix))) {
+      return NextResponse.json({ error: e.message }, { status: 400 })
+    }
+
+    return NextResponse.json({ error: 'Could not place order' }, { status: 400 })
   }
 }

@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto'
 import { mkdir, writeFile } from 'fs/promises'
 import { NextResponse } from 'next/server'
 import path from 'path'
-import { requireSession } from '@/lib/api-auth'
+import { requireAdminSession } from '@/lib/api-auth'
 
 export const runtime = 'nodejs'
 
@@ -16,7 +16,7 @@ const MIME_EXT: Record<string, string> = {
 }
 
 export async function POST(request: Request) {
-  const session = await requireSession()
+  const session = await requireAdminSession()
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

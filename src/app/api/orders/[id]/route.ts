@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server'
 import { OrderStatus, Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
-import { requireSession } from '@/lib/api-auth'
+import { requireAdminSession } from '@/lib/api-auth'
 
 const ORDER_STATUSES = new Set<string>(Object.values(OrderStatus))
 
 type RouteContext = { params: Promise<{ id: string }> }
 
 export async function PUT(request: Request, context: RouteContext) {
-  const session = await requireSession()
+  const session = await requireAdminSession()
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
