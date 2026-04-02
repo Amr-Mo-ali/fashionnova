@@ -52,7 +52,7 @@ export default function HomeView({ products, collections, initialCategory }: Pro
 
   const filteredProducts = useMemo(() => {
     if (selectedCategory === 'All') return products
-    const needle = selectedCategory.toLowerCase()
+    const needle = selectedCategory.trim().toLowerCase()
     return products.filter((p) => p.category.trim().toLowerCase() === needle)
   }, [products, selectedCategory])
 

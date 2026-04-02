@@ -5,9 +5,16 @@ import { prisma } from '@/lib/prisma'
 type PageProps = { params: { slug: string } }
 
 export default async function CollectionPage({ params }: PageProps) {
-  const collection = await prisma.collection.findUnique({
-    where: { slug: params.slug },
-  })
+  let collection = null
+
+  try {
+    collection = await prisma.collection.findUnique({
+      where: { slug: params.slug },
+    })
+  } catch (error) {
+    console.error('Failed to load collection:', error)
+    notFound()
+  }
 
   if (!collection) {
     notFound()

@@ -9,6 +9,17 @@ type Props = {
   product?: Product
 }
 
+const VALID_PRODUCT_CATEGORIES = [
+  'Jackets',
+  'Bags',
+  'Dresses',
+  'Suits',
+  'Pants',
+  'T-Shirts',
+] as const
+
+type ProductCategory = (typeof VALID_PRODUCT_CATEGORIES)[number]
+
 type UploadSlot = { id: string; previewUrl: string }
 
 const VIDEO_PATTERN = /\.(mp4|mov|webm)(\?|$)/i
@@ -28,7 +39,11 @@ export default function ProductForm({ product }: Props) {
   const [description, setDescription] = useState(product?.description ?? '')
   const [price, setPrice] = useState(String(product?.price ?? ''))
   const [stock, setStock] = useState(String(product?.stock ?? 0))
-  const [category, setCategory] = useState(product?.category ?? '')
+  const initialCategory =
+    product?.category && VALID_PRODUCT_CATEGORIES.includes(product.category as ProductCategory)
+      ? product.category
+      : VALID_PRODUCT_CATEGORIES[0]
+  const [category, setCategory] = useState<string>(product?.category ?? initialCategory)
   const [sizes, setSizes] = useState((product?.sizes ?? []).join(', '))
   const [colors, setColors] = useState((product?.colors ?? []).join(', '))
   const [imageUrls, setImageUrls] = useState<string[]>(() =>
@@ -212,12 +227,24 @@ export default function ProductForm({ product }: Props) {
 
       <div>
         <label className="mb-2 block text-sm text-zinc-400">Category</label>
-        <input
+        <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           required
           className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none"
-        />
+        >
+          {VALID_PRODUCT_CATEGORIES.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+          {product?.category && !VALID_PRODUCT_CATEGORIES.includes(product.category as ProductCategory) ? (
+            <option value={product.category}>{product.category}</option>
+          ) : null}
+        </select>
+        <p className="mt-1 text-xs text-zinc-500">
+          Category must be one of: Jackets, Bags, Dresses, Suits, Pants, T-Shirts
+        </p>
       </div>
 
       <div>
