@@ -3,9 +3,22 @@ import { prisma } from '@/lib/prisma'
 import DeleteCollectionButton from '@/app/admin/components/DeleteCollectionButton'
 
 export default async function AdminCollectionsPage() {
-  const collections = await prisma.collection.findMany({
-    orderBy: { updatedAt: 'desc' },
-  })
+  let collections = [] as Array<{
+    id: string
+    name: string
+    slug: string
+    updatedAt: Date
+  }>
+  let loadError = ''
+
+  try {
+    collections = await prisma.collection.findMany({
+      orderBy: { updatedAt: 'desc' },
+    })
+  } catch (error) {
+    console.error('Failed to load collections:', error)
+    loadError = 'Unable to load collections right now. Please try again later.'
+  }
 
   return (
     <div>
@@ -20,7 +33,9 @@ export default async function AdminCollectionsPage() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
-        {collections.length === 0 ? (
+        {loadError ? (
+          <p className="py-16 text-center text-red-400">{loadError}</p>
+        ) : collections.length === 0 ? (
           <p className="py-16 text-center text-zinc-400">No collections yet.</p>
         ) : (
           <div className="overflow-x-auto">

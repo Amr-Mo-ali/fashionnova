@@ -4,10 +4,18 @@ import { requireAdminSession } from '@/lib/api-auth'
 import { parseCollectionBody } from '@/lib/collection-payload'
 
 export async function GET() {
-  const collections = await prisma.collection.findMany({
-    orderBy: { updatedAt: 'desc' },
-  })
-  return NextResponse.json(collections)
+  try {
+    const collections = await prisma.collection.findMany({
+      orderBy: { updatedAt: 'desc' },
+    })
+    return NextResponse.json(collections)
+  } catch (error) {
+    console.error('Failed to fetch collections:', error)
+    return NextResponse.json(
+      { error: 'Could not load collections' },
+      { status: 500 }
+    )
+  }
 }
 
 export async function POST(request: Request) {
