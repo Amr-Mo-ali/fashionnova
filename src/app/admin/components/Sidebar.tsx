@@ -5,11 +5,11 @@ import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 
 const nav = [
-  { href: '/admin/dashboard', label: 'Dashboard' },
-  { href: '/admin/products', label: 'Products' },
-  { href: '/admin/collections', label: 'Collections' },
-  { href: '/admin/orders', label: 'Orders' },
-  { href: '/admin/settings', label: 'Settings' },
+  { href: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
+  { href: '/admin/products', label: 'Products', icon: '👗' },
+  { href: '/admin/collections', label: 'Collections', icon: '🎬' },
+  { href: '/admin/orders', label: 'Orders', icon: '📦' },
+  { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
 ]
 
 function linkActive(pathname: string, href: string) {
@@ -19,7 +19,7 @@ function linkActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
 
   return (
@@ -36,12 +36,14 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={`rounded-xl px-4 py-3 text-sm font-medium transition ${
                 isActive
                   ? 'bg-white text-black'
                   : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
               }`}
             >
+              <span className="mr-2 inline-block">{item.icon}</span>
               {item.label}
             </Link>
           )
@@ -51,10 +53,13 @@ export default function Sidebar() {
       <div className="border-t border-zinc-800 p-4">
         <button
           type="button"
-          onClick={() => signOut({ callbackUrl: '/admin/login' })}
+          onClick={() => {
+            onNavigate?.()
+            signOut({ callbackUrl: '/admin/login' })
+          }}
           className="w-full rounded-xl border border-zinc-700 px-4 py-3 text-sm font-medium text-zinc-300 transition hover:border-zinc-500 hover:text-white"
         >
-          Sign out
+          🚪 Sign out
         </button>
       </div>
     </aside>

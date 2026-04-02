@@ -11,6 +11,13 @@ type Props = {
 
 type UploadSlot = { id: string; previewUrl: string }
 
+const VIDEO_PATTERN = /\.(mp4|mov|webm)(\?|$)/i
+const IMAGE_PATTERN = /\.(jpe?g|png|webp|gif)(\?|$)/i
+
+function isVideoUrl(url: string) {
+  return VIDEO_PATTERN.test(url)
+}
+
 export default function ProductForm({ product }: Props) {
   const router = useRouter()
   const isEdit = Boolean(product)
@@ -29,7 +36,9 @@ export default function ProductForm({ product }: Props) {
   )
   const [manualUrl, setManualUrl] = useState('')
   const [uploadSlots, setUploadSlots] = useState<UploadSlot[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({})
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
 
   const removeImageAt = useCallback((index: number) => {
     setImageUrls((prev) => prev.filter((_, i) => i !== index))
@@ -61,6 +70,7 @@ export default function ProductForm({ product }: Props) {
         const id = crypto.randomUUID()
         const previewUrl = URL.createObjectURL(file)
         setUploadSlots((s) => [...s, { id, previewUrl }])
+        setUploadProgress((prev) => ({ ...prev, [id]: 10 }))
 
         try {
           const fd = new FormData()
@@ -74,12 +84,18 @@ export default function ProductForm({ product }: Props) {
             continue
           }
 
+          setUploadProgress((prev) => ({ ...prev, [id]: 100 }))
           setImageUrls((prev) => [...prev, url])
         } catch {
           setError('Upload failed')
         } finally {
           URL.revokeObjectURL(previewUrl)
           setUploadSlots((s) => s.filter((x) => x.id !== id))
+          setUploadProgress((prev) => {
+            const next = { ...prev }
+            delete next[id]
+            return next
+          })
         }
       }
 
@@ -233,23 +249,42 @@ export default function ProductForm({ product }: Props) {
           the main photo on the store.
         </p>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className="grid gap-3 sm:grid-cols-2">
           <input
-            ref={fileInputRef}
+            ref={cameraInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            accept="image/*,video/*"
+            capture="environment"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <input
+            ref={galleryInputRef}
+            type="file"
+            accept="image/*,video/*"
             multiple
             className="hidden"
             onChange={handleFileChange}
           />
+
           <button
             type="button"
             disabled={busyUploading || loading}
-            onClick={() => fileInputRef.current?.click()}
-            className="rounded-xl border border-zinc-600 px-4 py-3 text-sm font-medium text-white transition hover:border-zinc-400 disabled:opacity-50"
+            onClick={() => cameraInputRef.current?.click()}
+            className="inline-flex min-h-[56px] items-center justify-center rounded-2xl border border-zinc-600 bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition hover:border-zinc-400 disabled:opacity-50"
           >
-            {busyUploading ? 'Uploading…' : 'Choose images'}
+            📷 Take Photo
           </button>
+          <button
+            type="button"
+            disabled={busyUploading || loading}
+            onClick={() => galleryInputRef.current?.click()}
+            className="inline-flex min-h-[56px] items-center justify-center rounded-2xl border border-zinc-600 bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition hover:border-zinc-400 disabled:opacity-50"
+          >
+            🖼️ Choose from Gallery
+          </button>
+        </div>
+        <div className="mt-4 flex flex-col gap-3">
           <div className="flex flex-1 gap-2">
             <input
               value={manualUrl}
@@ -274,8 +309,15 @@ export default function ProductForm({ product }: Props) {
                 key={`${url}-${index}`}
                 className="relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-800"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt="" className="aspect-square w-full object-cover" />
+                {isVideoUrl(url) ? (
+                  <video
+                    src={url}
+                    controls
+                    className="aspect-square w-full object-cover"
+                  />
+                ) : (
+                  <img src={url} alt="" className="aspect-square w-full object-cover" />
+                )}
                 <button
                   type="button"
                   onClick={() => removeImageAt(index)}
@@ -290,14 +332,19 @@ export default function ProductForm({ product }: Props) {
                 key={slot.id}
                 className="relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-800"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={slot.previewUrl}
                   alt=""
                   className="aspect-square w-full object-cover opacity-90"
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/40 px-4 text-center">
                   <span className="text-sm font-medium text-white">Uploading…</span>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-700">
+                    <div
+                      className="h-full bg-white"
+                      style={{ width: `${uploadProgress[slot.id] ?? 0}%` }}
+                    />
+                  </div>
                 </div>
               </li>
             ))}

@@ -13,6 +13,7 @@ type CollectionPayload = {
   slug: string
   description: string
   image: string
+  order: number
 }
 
 export function parseCollectionBody(
@@ -27,9 +28,16 @@ export function parseCollectionBody(
   const o = body as Record<string, unknown>
   const name = typeof o.name === 'string' ? o.name.trim() : ''
   const rawSlug = typeof o.slug === 'string' ? o.slug.trim() : ''
-  const slug = rawSlug || createSlug(name)
+  const slug = createSlug(rawSlug || name)
   const description = typeof o.description === 'string' ? o.description.trim() : ''
   const image = typeof o.image === 'string' ? o.image.trim() : ''
+  const orderCandidate =
+    typeof o.order === 'number'
+      ? o.order
+      : typeof o.order === 'string'
+      ? Number(o.order)
+      : 0
+  const order = Number.isFinite(orderCandidate) ? Math.max(0, Math.round(orderCandidate)) : 0
 
   if (!name) {
     return { ok: false, error: 'Name is required' }
@@ -46,6 +54,7 @@ export function parseCollectionBody(
       slug,
       description,
       image,
+      order,
     },
   }
 }

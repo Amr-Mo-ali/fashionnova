@@ -43,6 +43,7 @@ export async function PUT(request: Request, context: RouteContext) {
         slug: parsed.data.slug,
         description: parsed.data.description || null,
         image: parsed.data.image || null,
+        order: parsed.data.order,
       },
     })
     return NextResponse.json(collection)
