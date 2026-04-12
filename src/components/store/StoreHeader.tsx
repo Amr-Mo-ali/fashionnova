@@ -34,17 +34,23 @@ export default function StoreHeader() {
         initial={{ y: -12, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as const }}
-        className={`fixed inset-x-0 top-0 z-50 border-b border-[#EBEBEB] bg-[var(--cream)]/98 backdrop-blur-md ${
-          scrolled ? 'shadow-[0_18px_48px_rgba(15,14,13,0.08)]' : ''
+        className={`fixed inset-x-0 top-0 z-50 border-b border-[#EBEBEB] bg-[var(--cream)]/98 backdrop-blur-md transition-shadow duration-300 ${
+          scrolled ? 'shadow-[0_24px_60px_rgba(15,14,13,0.16)]' : 'shadow-none'
         }`}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-8">
-          <Link
-            href="/"
-            className="font-[family-name:var(--font-cormorant),serif] text-base uppercase tracking-[0.3em] text-[var(--ink)]"
+          <motion.div
+            whileHover={{ rotateY: 5, rotateX: -2 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+            style={{ perspective: '1000px' }}
           >
-            Fashion<span className="text-[var(--gold)]">Nova</span>
-          </Link>
+            <Link
+              href="/"
+              className="font-[family-name:var(--font-cormorant),serif] text-base uppercase tracking-[0.3em] text-[var(--ink)]"
+            >
+              Fashion<span className="text-[var(--gold)]">Nova</span>
+            </Link>
+          </motion.div>
 
           <div className="hidden items-center gap-8 sm:flex">
             {NAV_LINKS.map((link) => {
@@ -71,11 +77,18 @@ export default function StoreHeader() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button
+            <motion.button
               type="button"
               onClick={openCartDrawer}
               className="relative flex h-11 w-11 items-center justify-center rounded-none border border-[var(--ink)]/15 text-[var(--ink)] transition hover:border-[var(--gold)] hover:text-[var(--gold)]"
               aria-label="Open shopping bag"
+              whileHover={scrolled ? { translateZ: 10 } : {}}
+              animate={itemCount > 0 ? { rotateY: [0, 360], rotateZ: [0, -5, 5, 0] } : {}}
+              transition={{
+                rotateY: { type: 'spring', stiffness: 200, damping: 15 },
+                rotateZ: { type: 'spring', stiffness: 300, damping: 20 },
+              }}
+              style={{ perspective: '1000px' }}
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -86,11 +99,15 @@ export default function StoreHeader() {
                 />
               </svg>
               {itemCount > 0 ? (
-                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--gold)] px-1 text-[10px] font-bold text-[var(--nav)]">
+                <motion.span 
+                  className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--gold)] px-1 text-[10px] font-bold text-[var(--nav)]"
+                  animate={{ scale: [1, 1.2, 1], rotate: [0, -10, 10, 0] }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                >
                   {itemCount > 99 ? '99+' : itemCount}
-                </span>
+                </motion.span>
               ) : null}
-            </button>
+            </motion.button>
 
             <button
               type="button"

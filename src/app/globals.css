@@ -202,3 +202,53 @@ legend {
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+/* 3D Transform utilities */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Hero gradient shift animation */
+@keyframes heroGradientShift {
+  0% {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(184, 151, 106, 0.1) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+  }
+  50% {
+    background: linear-gradient(
+      135deg,
+      rgba(184, 151, 106, 0.15) 0%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(184, 151, 106, 0.1) 100%
+    );
+  }
+  100% {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(184, 151, 106, 0.12) 50%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+  }
+}
+
+.hero-gradient {
+  animation: heroGradientShift 8s ease infinite alternate;
+}
+
+/* Performance optimizations for 3D effects */
+.will-change-transform {
+  will-change: transform;
+}

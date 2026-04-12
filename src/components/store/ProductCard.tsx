@@ -3,34 +3,80 @@
 import type { Product } from '@prisma/client'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { useState } from 'react'
+import { use3DCard } from '@/hooks/use3DEffect'
 import ProductImage from './ProductImage'
 
 export default function ProductCard({ product }: { product: Product }) {
   const image = product.images[0] ?? null
   const hoverImage = product.images[1] ?? null
+  const { ref, rotateX, rotateY, translateZ, onMouseMove, onMouseLeave, isHoverCapable } =
+    use3DCard(8)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isHoverCapable) return
+    const rect = ref.current?.getBoundingClientRect()
+    if (rect) {
+      setMousePos({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      })
+    }
+    onMouseMove(e)
+  }
 
   return (
     <Link href={`/products/${product.id}`} className="block h-full">
       <motion.div
-        className="group flex h-full flex-col overflow-hidden rounded-[4px] bg-[var(--white)] shadow-[0_12px_25px_rgba(15,14,13,0.06)] transition duration-300 hover:shadow-[0_18px_50px_rgba(15,14,13,0.18)]"
-        whileHover={{ scale: 1.01 }}
+        ref={ref}
+        className="group relative flex h-full flex-col overflow-hidden rounded-[4px] bg-[var(--white)] shadow-[0_12px_25px_rgba(15,14,13,0.06)] transition duration-300 hover:shadow-[0_28px_60px_rgba(15,14,13,0.25)]"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={onMouseLeave}
+        style={
+          isHoverCapable
+            ? {
+                rotateX,
+                rotateY,
+                translateZ,
+                transformStyle: 'preserve-3d',
+              }
+            : {}
+        }
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
+        whileHover={!isHoverCapable ? { scale: 1.01 } : {}}
       >
-        <div className="relative overflow-hidden">
-          <ProductImage
-            src={image}
-            alt={product.name}
-            className="aspect-[3/4] w-full transition duration-[700ms] group-hover:scale-[1.03]"
-          />
-          {hoverImage ? (
-            <div className="pointer-events-none absolute inset-0 opacity-0 transition duration-700 group-hover:opacity-100">
-              <ProductImage
-                src={hoverImage}
-                alt={`${product.name} alternate view`}
-                className="aspect-[3/4] w-full"
-              />
-            </div>
-          ) : null}
+        <div className="relative overflow-hidden" style={{ perspective: '1000px' }}>
+          <motion.div style={{ transformStyle: 'preserve-3d' }}>
+            <ProductImage
+              src={image}
+              alt={product.name}
+              className="aspect-[3/4] w-full transition duration-[700ms] group-hover:scale-[1.03]"
+            />
+            {hoverImage ? (
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition duration-700 group-hover:opacity-100">
+                <ProductImage
+                  src={hoverImage}
+                  alt={`${product.name} alternate view`}
+                  className="aspect-[3/4] w-full"
+                />
+              </div>
+            ) : null}
+          </motion.div>
+
+          {/* Gold shimmer line that follows mouse */}
+          {isHoverCapable && (
+            <div
+              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+              style={{
+                background: `radial-gradient(
+                  circle 60px at ${mousePos.x}px ${mousePos.y}px,
+                  rgba(201, 168, 76, 0.3) 0%,
+                  transparent 100%
+                )`,
+              }}
+            />
+          )}
         </div>
         <div className="flex flex-1 flex-col gap-2 px-6 py-6 sm:px-7 sm:py-7">
           <p className="text-[11px] uppercase tracking-[0.15em] text-[#999]">

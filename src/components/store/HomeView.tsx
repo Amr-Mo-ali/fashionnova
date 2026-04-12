@@ -1,14 +1,15 @@
 'use client'
 
 import type { Collection, Product } from '@prisma/client'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import {
   SHOP_CATEGORY_CHIPS,
   categoryFilterHref,
 } from '@/lib/shop-categories'
+import { useHeroMouseTilt } from '@/hooks/use3DEffect'
 import ProductCard from './ProductCard'
 
 const container = {
@@ -37,6 +38,16 @@ const heroLine = {
   }),
 }
 
+const scrollReveal = {
+  hidden: { opacity: 0, y: 30, rotateX: 15 },
+  show: {
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+}
+
 type Props = {
   products: Product[]
   collections: Collection[]
@@ -45,6 +56,13 @@ type Props = {
 export default function HomeView({ products, collections, initialCategory }: Props) {
   const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
+  const heroSectionRef = useRef<HTMLDivElement>(null)
+  const { rotateX: heroRotateX, rotateY: heroRotateY, onMouseMove: heroOnMouseMove, onMouseLeave: heroOnMouseLeave, isHoverCapable } = useHeroMouseTilt(5)
+  
+  // Scroll tracking for parallax effects
+  const { scrollY } = useScroll()
+  const heroY = useTransform(scrollY, [0, 300], [0, 150])
+  const textY = useTransform(scrollY, [0, 300], [0, 90])
 
   useEffect(() => {
     setSelectedCategory(initialCategory)
@@ -63,12 +81,28 @@ export default function HomeView({ products, collections, initialCategory }: Pro
 
   return (
     <div className="flex flex-col overflow-hidden">
-      <section className="relative isolate min-h-[calc(100dvh-5.5rem)] overflow-hidden bg-[var(--cream)] px-4 pt-24 sm:px-8 lg:px-0">
+      <section 
+        ref={heroSectionRef}
+        className="relative isolate min-h-[calc(100dvh-5.5rem)] overflow-hidden bg-[var(--cream)] px-4 pt-24 sm:px-8 lg:px-0"
+        onMouseMove={(e) => {
+          if (isHoverCapable) {
+            heroOnMouseMove(e as any)
+          }
+        }}
+        onMouseLeave={heroOnMouseLeave}
+        style={{ perspective: '1000px' }}
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(184,151,106,0.14),transparent_35%)]" aria-hidden="true" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_85%,rgba(15,14,13,0.03)_100%)]" aria-hidden="true" />
 
-        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div className="max-w-2xl py-20 lg:py-24">
+        <motion.div 
+          className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center"
+          style={isHoverCapable ? { rotateX: heroRotateX, rotateY: heroRotateY, transformStyle: 'preserve-3d' } : {}}
+        >
+          <motion.div 
+            className="max-w-2xl py-20 lg:py-24"
+            style={{ y: textY }}
+          >
             <motion.p
               custom={0}
               variants={heroLine}
@@ -113,9 +147,12 @@ export default function HomeView({ products, collections, initialCategory }: Pro
                 Shop collection
               </a>
             </motion.div>
-          </div>
+          </motion.div>
 
-          <div className="relative hidden lg:block">
+          <motion.div 
+            className="relative hidden lg:block"
+            style={{ y: useTransform(scrollY, [0, 300], [0, 120]) }}
+          >
             <div className="relative overflow-hidden rounded-[4px] border border-[var(--border)] bg-[var(--panel)] px-6 py-6 shadow-[0_40px_80px_rgba(15,14,13,0.12)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,184,150,0.18),transparent_46%)]" />
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[4px] bg-[var(--ink)]">
@@ -132,8 +169,8 @@ export default function HomeView({ products, collections, initialCategory }: Pro
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         <div className="absolute inset-x-0 bottom-10 flex justify-center">
           <div className="flex h-12 w-8 flex-col items-center justify-between rounded-full border border-[var(--gold)]/40 p-1">
@@ -146,47 +183,76 @@ export default function HomeView({ products, collections, initialCategory }: Pro
       {collections.length > 0 ? (
         <section className="bg-[var(--cream)] px-4 py-16 sm:px-8 lg:px-0">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <motion.div 
+              className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-80px' }}
+              variants={scrollReveal}
+            >
               <div>
                 <p className="text-[11px] uppercase tracking-[0.18em] text-[#999]">Collections</p>
                 <h2 className="mt-4 font-[family-name:var(--font-cormorant),serif] text-3xl leading-tight text-[var(--ink)]">
                   Curated edits for every look
                 </h2>
               </div>
-            </div>
+            </motion.div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {collections.map((collection) => (
-                <Link
+              {collections.map((collection, idx) => (
+                <motion.div
                   key={collection.id}
-                  href={`/collections/${collection.slug}`}
-                  className="group overflow-hidden rounded-[4px] border border-[var(--border)] bg-white transition hover:-translate-y-1"
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true, margin: '-80px' }}
+                  variants={{
+                    hidden: { opacity: 0, y: 30, rotateX: 12 },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      rotateX: 0,
+                      transition: { 
+                        duration: 0.6, 
+                        delay: idx * 0.1,
+                        ease: [0.22, 1, 0.36, 1] as const 
+                      },
+                    },
+                  }}
+                  style={{ perspective: '1000px' }}
+                  className="group"
+                  whileHover={{ y: -4 }}
                 >
-                  <div className="h-56 overflow-hidden bg-zinc-900">
-                    {collection.image ? (
-                      <img
-                        src={collection.image}
-                        alt={collection.name}
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center bg-zinc-900 text-sm uppercase tracking-[0.2em] text-zinc-400">
+                  <Link
+                    href={`/collections/${collection.slug}`}
+                    className="overflow-hidden rounded-[4px] border border-[var(--border)] bg-white block transition shadow-[0_12px_25px_rgba(15,14,13,0.06)] hover:shadow-[0_28px_60px_rgba(15,14,13,0.2)]"
+                  >
+                    <div className="h-56 overflow-hidden bg-zinc-900">
+                      {collection.image ? (
+                        <motion.img
+                          src={collection.image}
+                          alt={collection.name}
+                          className="h-full w-full object-cover transition duration-300"
+                          whileHover={{ scale: 1.05 }}
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-zinc-900 text-sm uppercase tracking-[0.2em] text-zinc-400">
+                          {collection.name}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <p className="text-[11px] uppercase tracking-[0.18em] text-[#999]">Collection</p>
+                      <h3 className="mt-3 text-xl font-semibold text-[var(--ink)]">
                         {collection.name}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#999]">Collection</p>
-                    <h3 className="mt-3 text-xl font-semibold text-[var(--ink)]">
-                      {collection.name}
-                    </h3>
-                    {collection.description ? (
-                      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                        {collection.description}
-                      </p>
-                    ) : null}
-                  </div>
-                </Link>
+                      </h3>
+                      {collection.description ? (
+                        <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                          {collection.description}
+                        </p>
+                      ) : null}
+                    </div>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -199,14 +265,17 @@ export default function HomeView({ products, collections, initialCategory }: Pro
             {SHOP_CATEGORY_CHIPS.map((cat) => {
               const active = selectedCategory === cat
               return (
-                <button
+                <motion.button
                   key={cat}
                   type="button"
                   onClick={() => selectCategory(cat)}
                   className={`category-chip ${active ? 'category-chip-active' : 'category-chip-inactive'}`}
+                  whileTap={{ scale: 0.96, translateZ: -4 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  animate={active ? { scale: 1 } : { scale: 1 }}
                 >
                   {cat}
-                </button>
+                </motion.button>
               )
             })}
           </div>
@@ -215,10 +284,10 @@ export default function HomeView({ products, collections, initialCategory }: Pro
 
       <section id="products" className="mx-auto max-w-7xl scroll-mt-[4.5rem] px-4 py-24 sm:px-8 sm:py-32">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={scrollReveal}
           className="mb-16 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
