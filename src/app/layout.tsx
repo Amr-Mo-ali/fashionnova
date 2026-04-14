@@ -1,23 +1,18 @@
 import { CartProvider } from "@/components/store/CartProvider";
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter, Cairo } from "next/font/google";
+import { Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-outfit",
+  weight: ["400", "900"],
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const cairo = Cairo({
-  subsets: ["latin", "arabic"],
-  variable: "--font-cairo",
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -34,9 +29,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cormorant.variable} ${cairo.variable} h-full antialiased`}
+      className={`${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className={`${inter.className} flex min-h-full flex-col bg-[var(--cream)] text-[var(--ink)]`}>
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+      </head>
+      <body className={`${outfit.className} flex min-h-full flex-col bg-[#09090B] text-[#FAFAFA]`}>
         <CartProvider>{children}</CartProvider>
       </body>
     </html>

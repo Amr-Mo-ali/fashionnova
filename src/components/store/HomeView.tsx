@@ -83,7 +83,7 @@ export default function HomeView({ products, collections, initialCategory }: Pro
     <div className="flex flex-col overflow-hidden">
       <section 
         ref={heroSectionRef}
-        className="relative isolate min-h-[calc(100dvh-5.5rem)] overflow-hidden bg-[var(--cream)] px-4 pt-24 sm:px-8 lg:px-0"
+        className="relative isolate min-h-[calc(100dvh-5.5rem)] overflow-hidden bg-[#09090B] px-4 pt-24 sm:px-8 lg:px-0"
         onMouseMove={(e) => {
           if (isHoverCapable) {
             heroOnMouseMove(e as any)
@@ -92,8 +92,8 @@ export default function HomeView({ products, collections, initialCategory }: Pro
         onMouseLeave={heroOnMouseLeave}
         style={{ perspective: '1000px' }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(184,151,106,0.14),transparent_35%)]" aria-hidden="true" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_85%,rgba(15,14,13,0.03)_100%)]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(139,92,246,0.08),transparent_35%)]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_85%,rgba(139,92,246,0.02)_100%)]" aria-hidden="true" />
 
         <motion.div 
           className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center"
@@ -108,7 +108,7 @@ export default function HomeView({ products, collections, initialCategory }: Pro
               variants={heroLine}
               initial="hidden"
               animate="show"
-              className="mb-8 text-[11px] uppercase tracking-[0.15em] text-[#999]"
+              className="mb-8 text-[11px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]"
             >
               Est. 2024 · Cairo
             </motion.p>
@@ -117,20 +117,20 @@ export default function HomeView({ products, collections, initialCategory }: Pro
               variants={heroLine}
               initial="hidden"
               animate="show"
-              className="font-[family-name:var(--font-cormorant),serif] text-[3.75rem] leading-[0.95] tracking-[-0.03em] text-[var(--ink)] sm:text-[5rem] md:text-[6.5rem]"
+              className="font-[family-name:var(--font-outfit),sans-serif] text-[3.75rem] font-black leading-[0.95] tracking-[-0.03em] text-[#FAFAFA] sm:text-[5rem] md:text-[6.5rem]"
             >
               Dressed
               <br />
-              <span className="italic text-[var(--ink)]/85">for the bold</span>
+              <span className="italic text-[#FAFAFA]/70">for the bold</span>
             </motion.h1>
             <motion.p
               custom={2}
               variants={heroLine}
               initial="hidden"
               animate="show"
-              className="mt-10 max-w-xl text-base leading-[1.85] text-[var(--muted)] sm:text-lg"
+              className="mt-10 max-w-xl text-base leading-[1.85] text-[rgba(250,250,250,0.6)] sm:text-lg"
             >
-              Curated silhouettes, refined materials, and quiet luxury designed for those who move
+              Curated silhouettes, refined materials, and theatrical luxury designed for those who move
               with confidence.
             </motion.p>
             <motion.div
@@ -153,16 +153,16 @@ export default function HomeView({ products, collections, initialCategory }: Pro
             className="relative hidden lg:block"
             style={{ y: useTransform(scrollY, [0, 300], [0, 120]) }}
           >
-            <div className="relative overflow-hidden rounded-[4px] border border-[var(--border)] bg-[var(--panel)] px-6 py-6 shadow-[0_40px_80px_rgba(15,14,13,0.12)]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,184,150,0.18),transparent_46%)]" />
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[4px] bg-[var(--ink)]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_35%,rgba(245,242,237,0.24),transparent_40%)]" />
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'><path d=\'M0 0h400v400H0z\' fill=\'%23e8e0d4\'/><path d=\'M0 100c100-50 200 50 300 0s100-100 100-100V400H0z\' fill=\'%23f5f2ed\' opacity=\'0.55\'/></svg>')] bg-cover opacity-40" />
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[rgba(15,14,13,0.72)] to-transparent" />
+            <div className="relative overflow-hidden rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] px-6 py-6 shadow-[0_40px_80px_rgba(0,0,0,0.3)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,0.1),transparent_46%)]" />
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[4px] bg-[#1A1A1A]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_35%,rgba(139,92,246,0.15),transparent_40%)]" />
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'><path d=\'M0 0h400v400H0z\' fill=\'%23111113\'/><path d=\'M0 100c100-50 200 50 300 0s100-100 100-100V400H0z\' fill=\'%238B5CF6\' opacity=\'0.08\'/></svg>')] bg-cover opacity-40" />
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[rgba(0,0,0,0.8)] to-transparent" />
                 <div className="relative z-10 flex h-full items-center justify-center px-10">
-                  <div className="w-full max-w-[320px] rounded-[4px] border border-[var(--gold)]/20 bg-[rgba(245,242,237,0.85)] px-8 py-12 text-center">
-                    <p className="text-[10px] uppercase tracking-[0.15em] text-[#999]">Editorial</p>
-                    <p className="mt-6 text-3xl font-[family-name:var(--font-cormorant),serif] leading-tight text-[var(--ink)]">
+                  <div className="w-full max-w-[320px] rounded-[4px] border border-[rgba(139,92,246,0.3)] bg-[rgba(9,9,11,0.85)] px-8 py-12 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">Editorial</p>
+                    <p className="mt-6 text-3xl font-[family-name:var(--font-outfit),sans-serif] font-bold leading-tight text-[#FAFAFA]">
                       The season collection
                     </p>
                   </div>
@@ -173,15 +173,15 @@ export default function HomeView({ products, collections, initialCategory }: Pro
         </motion.div>
 
         <div className="absolute inset-x-0 bottom-10 flex justify-center">
-          <div className="flex h-12 w-8 flex-col items-center justify-between rounded-full border border-[var(--gold)]/40 p-1">
-            <span className="block h-1 w-full rounded-full bg-[var(--gold)] opacity-40" />
-            <span className="block h-1.5 w-1.5 rounded-full bg-[var(--gold)] animate-bounce" />
+          <div className="flex h-12 w-8 flex-col items-center justify-between rounded-full border border-[rgba(139,92,246,0.4)] p-1">
+            <span className="block h-1 w-full rounded-full bg-[#8B5CF6] opacity-40" />
+            <span className="block h-1.5 w-1.5 rounded-full bg-[#8B5CF6] animate-bounce" />
           </div>
         </div>
       </section>
 
       {collections.length > 0 ? (
-        <section className="bg-[var(--cream)] px-4 py-16 sm:px-8 lg:px-0">
+        <section className="bg-[#09090B] px-4 py-16 sm:px-8 lg:px-0">
           <div className="mx-auto max-w-7xl">
             <motion.div 
               className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
@@ -191,8 +191,8 @@ export default function HomeView({ products, collections, initialCategory }: Pro
               variants={scrollReveal}
             >
               <div>
-                <p className="text-[11px] uppercase tracking-[0.18em] text-[#999]">Collections</p>
-                <h2 className="mt-4 font-[family-name:var(--font-cormorant),serif] text-3xl leading-tight text-[var(--ink)]">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">Collections</p>
+                <h2 className="mt-4 font-[family-name:var(--font-outfit),sans-serif] text-3xl font-black leading-tight text-[#FAFAFA]">
                   Curated edits for every look
                 </h2>
               </div>
@@ -224,9 +224,9 @@ export default function HomeView({ products, collections, initialCategory }: Pro
                 >
                   <Link
                     href={`/collections/${collection.slug}`}
-                    className="overflow-hidden rounded-[4px] border border-[var(--border)] bg-white block transition shadow-[0_12px_25px_rgba(15,14,13,0.06)] hover:shadow-[0_28px_60px_rgba(15,14,13,0.2)]"
+                    className="overflow-hidden rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] block transition shadow-[0_12px_25px_rgba(0,0,0,0.3)] hover:shadow-[0_28px_60px_rgba(139,92,246,0.2)] hover:border-[#8B5CF6]"
                   >
-                    <div className="h-56 overflow-hidden bg-zinc-900">
+                    <div className="h-56 overflow-hidden bg-[#1A1A1A]">
                       {collection.image ? (
                         <motion.img
                           src={collection.image}
@@ -235,18 +235,18 @@ export default function HomeView({ products, collections, initialCategory }: Pro
                           whileHover={{ scale: 1.05 }}
                         />
                       ) : (
-                        <div className="flex h-full items-center justify-center bg-zinc-900 text-sm uppercase tracking-[0.2em] text-zinc-400">
+                        <div className="flex h-full items-center justify-center bg-[#1A1A1A] text-sm uppercase tracking-[0.08em] text-[rgba(250,250,250,0.4)]">
                           {collection.name}
                         </div>
                       )}
                     </div>
                     <div className="p-6">
-                      <p className="text-[11px] uppercase tracking-[0.18em] text-[#999]">Collection</p>
-                      <h3 className="mt-3 text-xl font-semibold text-[var(--ink)]">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">Collection</p>
+                      <h3 className="mt-3 text-xl font-bold text-[#FAFAFA]">
                         {collection.name}
                       </h3>
                       {collection.description ? (
-                        <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                        <p className="mt-3 text-sm leading-6 text-[rgba(250,250,250,0.6)]">
                           {collection.description}
                         </p>
                       ) : null}
@@ -259,7 +259,7 @@ export default function HomeView({ products, collections, initialCategory }: Pro
         </section>
       ) : null}
 
-      <div className="border-b border-[var(--border)] bg-[var(--cream)] px-4 py-6 sm:px-8">
+      <div className="border-b border-[rgba(255,255,255,0.08)] bg-[#09090B] px-4 py-6 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex gap-3 overflow-x-auto pb-1 sm:justify-start sm:overflow-visible [&::-webkit-scrollbar]:hidden">
             {SHOP_CATEGORY_CHIPS.map((cat) => {
@@ -282,7 +282,7 @@ export default function HomeView({ products, collections, initialCategory }: Pro
         </div>
       </div>
 
-      <section id="products" className="mx-auto max-w-7xl scroll-mt-[4.5rem] px-4 py-24 sm:px-8 sm:py-32">
+      <section id="products" className="mx-auto max-w-7xl scroll-mt-[4.5rem] px-4 py-24 sm:px-8 sm:py-32 bg-[#09090B]">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -291,29 +291,29 @@ export default function HomeView({ products, collections, initialCategory }: Pro
           className="mb-16 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--gold)]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8B5CF6]">
               The edit
             </p>
-            <h2 className="mt-4 font-[family-name:var(--font-cormorant),serif] text-3xl leading-tight text-[var(--ink)] sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 font-[family-name:var(--font-outfit),sans-serif] text-3xl font-black leading-tight text-[#FAFAFA] sm:text-4xl md:text-5xl">
               New arrivals
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-[1.85] text-[var(--muted)]">
+          <p className="max-w-sm text-sm leading-[1.85] text-[rgba(250,250,250,0.6)]">
             Each piece selected for texture, drape, and presence.
           </p>
         </motion.div>
 
         {products.length === 0 ? (
-          <div className="rounded-[4px] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
+          <div className="rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] p-20 text-center text-[rgba(250,250,250,0.6)]">
             The collection will appear here soon.
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="rounded-[4px] border border-[var(--border)] bg-[var(--white)] p-20 text-center text-[var(--muted)]">
+          <div className="rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] p-20 text-center text-[rgba(250,250,250,0.6)]">
             <p>No pieces in this category yet.</p>
             <button
               type="button"
               onClick={() => selectCategory('All')}
-              className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-[0.25em] text-[var(--gold)]"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.08em] text-[#8B5CF6]"
             >
               View all
             </button>

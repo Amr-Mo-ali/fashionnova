@@ -30,7 +30,7 @@ export default function ProductCard({ product }: { product: Product }) {
     <Link href={`/products/${product.id}`} className="block h-full">
       <motion.div
         ref={ref}
-        className="group relative flex h-full flex-col overflow-hidden rounded-[4px] bg-[var(--white)] shadow-[0_12px_25px_rgba(15,14,13,0.06)] transition duration-300 hover:shadow-[0_28px_60px_rgba(15,14,13,0.25)]"
+        className="group relative flex h-full flex-col overflow-hidden rounded-[4px] bg-[#111113] border border-[rgba(255,255,255,0.08)] shadow-[0_12px_25px_rgba(0,0,0,0.3)] transition duration-300 hover:shadow-[0_28px_60px_rgba(139,92,246,0.2)] hover:border-[#8B5CF6]"
         onMouseMove={handleMouseMove}
         onMouseLeave={onMouseLeave}
         style={
@@ -64,14 +64,14 @@ export default function ProductCard({ product }: { product: Product }) {
             ) : null}
           </motion.div>
 
-          {/* Gold shimmer line that follows mouse */}
+          {/* Purple shimmer line that follows mouse */}
           {isHoverCapable && (
             <div
               className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
               style={{
                 background: `radial-gradient(
                   circle 60px at ${mousePos.x}px ${mousePos.y}px,
-                  rgba(201, 168, 76, 0.3) 0%,
+                  rgba(139, 92, 246, 0.3) 0%,
                   transparent 100%
                 )`,
               }}
@@ -79,16 +79,16 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
         </div>
         <div className="flex flex-1 flex-col gap-2 px-6 py-6 sm:px-7 sm:py-7">
-          <p className="text-[11px] uppercase tracking-[0.15em] text-[#999]">
+          <p className="text-[11px] uppercase tracking-[0.08em] font-bold text-[rgba(250,250,250,0.6)]">
             {product.category}
           </p>
-          <h2 className="font-[family-name:var(--font-cormorant),serif] text-[18px] leading-snug text-[var(--ink)] transition group-hover:text-[var(--gold)]">
+          <h2 className="font-[family-name:var(--font-outfit),sans-serif] text-[18px] font-bold leading-snug text-[#FAFAFA] transition group-hover:text-[#8B5CF6]">
             {product.name}
           </h2>
-          <p className="mt-auto text-[14px] font-normal text-[#555]">
+          <p className="mt-auto text-[14px] font-normal text-[rgba(250,250,250,0.6)]">
             EGP {product.price.toLocaleString()}
           </p>
-          <span className="mt-3 inline-block text-[12px] underline underline-offset-4 text-[var(--nav)] opacity-90">
+          <span className="mt-3 inline-block text-[12px] underline underline-offset-4 text-[#8B5CF6] opacity-90">
             View piece
           </span>
         </div>

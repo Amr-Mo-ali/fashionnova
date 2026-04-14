@@ -58,17 +58,17 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
       >
-        <nav aria-label="Breadcrumb" className="text-[12px] uppercase tracking-[0.15em] text-[#999]">
+        <nav aria-label="Breadcrumb" className="text-[12px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
           <p>
-            <Link href="/" className="transition hover:text-[var(--ink)]">
+            <Link href="/" className="transition hover:text-[#FAFAFA]">
               Home
             </Link>{' '}
             <span className="mx-2">·</span>
-            <span className="text-[var(--ink)]">{product.category}</span>
+            <span className="text-[#FAFAFA]">{product.category}</span>
           </p>
         </nav>
 
-        <div className="mt-6 overflow-hidden rounded-[4px] border border-[var(--border)] bg-[var(--white)] shadow-[0_24px_60px_rgba(15,14,13,0.1)]">
+        <div className="mt-6 overflow-hidden rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] shadow-[0_24px_60px_rgba(0,0,0,0.3)]">
           <ProductImage
             src={selectedImage}
             alt={product.name}
@@ -85,8 +85,8 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                 onClick={() => setSelectedImage(src)}
                 className={`overflow-hidden rounded-[4px] border p-1 transition ${
                   selectedImage === src
-                    ? 'border-[var(--gold)]'
-                    : 'border-[var(--border)] hover:border-[var(--gold)]'
+                    ? 'border-[#8B5CF6]'
+                    : 'border-[rgba(255,255,255,0.08)] hover:border-[#8B5CF6]'
                 }`}
               >
                 <ProductImage
@@ -106,26 +106,26 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] as const }}
       >
-        <p className="text-[11px] uppercase tracking-[0.15em] text-[#999]">
+        <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
           {product.category}
         </p>
-        <h1 className="mt-5 font-[family-name:var(--font-cormorant),serif] text-4xl leading-tight text-[var(--ink)] sm:text-5xl md:text-6xl">
+        <h1 className="mt-5 font-[family-name:var(--font-outfit),sans-serif] text-4xl font-black leading-tight text-[#FAFAFA] sm:text-5xl md:text-6xl">
           {product.name}
         </h1>
-        <p className="mt-6 text-3xl font-semibold text-[var(--gold)]">
+        <p className="mt-6 text-3xl font-bold text-[#8B5CF6]">
           EGP {product.price.toLocaleString()}
         </p>
-        <p className={`mt-8 text-base leading-[1.8] text-[var(--muted)] ${isArabic ? 'arabic' : ''}`}>
+        <p className={`mt-8 text-base leading-[1.8] text-[rgba(250,250,250,0.6)] ${isArabic ? 'arabic' : ''}`}>
           {product.description}
         </p>
-        <p className="mt-6 text-sm uppercase tracking-[0.22em] text-[var(--muted)]">
+        <p className="mt-6 text-sm font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
           {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
         </p>
 
         <div className="mt-12 space-y-8">
           {sizes.length > 0 ? (
             <div>
-              <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
                 Size
               </p>
               <div className="flex flex-wrap gap-3">
@@ -134,8 +134,8 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                     key={s}
                     type="button"
                     onClick={() => setSize(s)}
-                    className={`min-h-[44px] rounded-none border px-5 py-3 text-sm font-medium transition ${
-                      size === s ? 'border-[var(--nav)] bg-[var(--nav)]/10 text-[var(--ink)]' : 'border-[var(--border)] text-[var(--ink)] hover:border-[var(--gold)]'
+                    className={`min-h-[44px] rounded-lg border px-5 py-3 text-sm font-bold transition ${
+                      size === s ? 'border-[#8B5CF6] bg-[#8B5CF6]/15 text-[#FAFAFA]' : 'border-[rgba(255,255,255,0.15)] text-[#FAFAFA] hover:border-[#8B5CF6]'
                     }`}
                   >
                     {s}
@@ -147,7 +147,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
 
           {colors.length > 0 ? (
             <div>
-              <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
                 Color
               </p>
               <div className="flex flex-wrap gap-3">
@@ -157,9 +157,9 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                     type="button"
                     onClick={() => setColor(c)}
                     className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition ${
-                      color === c ? 'border-[var(--nav)]' : 'border-transparent'
+                      color === c ? 'border-[#8B5CF6]' : 'border-[rgba(255,255,255,0.3)]'
                     }`}
-                    style={{ backgroundColor: c.toLowerCase() || '#EEE' }}
+                    style={{ backgroundColor: c.toLowerCase() || '#666' }}
                     aria-label={c}
                   />
                 ))}
@@ -168,7 +168,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
           ) : null}
 
           <div>
-            <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
               Quantity
             </p>
             <div className="flex items-center gap-3">
@@ -176,7 +176,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                 type="button"
                 aria-label="Decrease quantity"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="flex h-10 w-10 items-center justify-center rounded-none border border-[var(--border)] text-[var(--ink)] transition hover:border-[var(--gold)]"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.15)] text-[#FAFAFA] transition hover:border-[#8B5CF6]"
               >
                 −
               </button>
@@ -190,13 +190,13 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                   if (!Number.isFinite(v)) return
                   setQuantity(Math.min(product.stock, Math.max(1, Math.round(v))))
                 }}
-                className="w-20 border-b border-[var(--border)] bg-transparent py-2 text-center text-[var(--ink)] focus:border-[var(--gold)] focus:outline-none"
+                className="w-20 border-b border-[rgba(255,255,255,0.15)] bg-transparent py-2 text-center text-[#FAFAFA] focus:border-[#8B5CF6] focus:outline-none"
               />
               <button
                 type="button"
                 aria-label="Increase quantity"
                 onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                className="flex h-10 w-10 items-center justify-center rounded-none border border-[var(--border)] text-[var(--ink)] transition hover:border-[var(--gold)]"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.15)] text-[#FAFAFA] transition hover:border-[#8B5CF6]"
               >
                 +
               </button>
@@ -212,20 +212,20 @@ export default function ProductDetailForm({ product }: { product: Product }) {
               type="button"
               disabled={!canAdd}
               onClick={handleAddToCart}
-              className="w-full min-h-[48px] rounded-none bg-[var(--nav)] px-6 text-sm uppercase tracking-[0.15em] text-[var(--white)] transition hover:bg-[var(--gold)] disabled:cursor-not-allowed disabled:opacity-40"
+              className="w-full min-h-[48px] rounded-lg bg-[#8B5CF6] px-6 text-sm font-bold uppercase tracking-[0.08em] text-[#FAFAFA] transition hover:filter hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {added ? 'Added to bag' : 'Add to bag'}
             </button>
             <button
               type="button"
               onClick={() => router.push('/cart')}
-              className="w-full min-h-[48px] rounded-none border border-[var(--nav)] bg-transparent px-6 text-sm uppercase tracking-[0.15em] text-[var(--nav)] transition hover:bg-[var(--nav)]/5"
+              className="w-full min-h-[48px] rounded-lg border border-[#8B5CF6] bg-transparent px-6 text-sm font-bold uppercase tracking-[0.08em] text-[#8B5CF6] transition hover:bg-[#8B5CF6]/10"
             >
               View bag
             </button>
           </div>
 
-          <div className="border-t border-[var(--border)] pt-6">
+          <div className="border-t border-[rgba(255,255,255,0.08)] pt-6">
             <div className="info-bar">
               <span className="text-base">ℹ️</span>
               <span>Complimentary express delivery on all orders.</span>
