@@ -188,3 +188,6 @@ export default function StoreHeader() {
         ) : null}
       </AnimatePresence>
       <div className="h-16" />
+    </>
+  )
+}
