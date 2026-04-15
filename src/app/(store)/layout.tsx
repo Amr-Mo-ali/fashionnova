@@ -6,9 +6,9 @@ export const dynamic = 'force-dynamic'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="store-front flex min-h-screen flex-col bg-[#09090B] text-[#FAFAFA]">
+    <div className="store-front flex min-h-screen flex-col bg-[#f5f2ed] text-[#0f0e0d]">
       <StoreHeader />
-      <main className="flex-1 pt-16">{children}</main>
+      <main className="flex-1">{children}</main>
       <StoreFooter />
       <CartDrawer />
     </div>

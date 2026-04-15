@@ -3,9 +3,16 @@
 import { useRef, useCallback, useEffect, useState } from 'react'
 import { useSpring } from 'framer-motion'
 
-export function use3DCard(maxRotation = 8) {
+interface Use3DCardOptions {
+  maxRotation?: number
+  deepShadow?: boolean
+  enableShimmer?: boolean
+}
+
+export function use3DCard(maxRotation = 12, options?: Use3DCardOptions) {
   const ref = useRef<HTMLDivElement>(null)
   const [isHoverCapable, setIsHoverCapable] = useState(false)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   const rotateX = useSpring(0, { stiffness: 300, damping: 30 })
   const rotateY = useSpring(0, { stiffness: 300, damping: 30 })
@@ -27,6 +34,9 @@ export function use3DCard(maxRotation = 8) {
       const mouseX = e.clientX - centerX
       const mouseY = e.clientY - centerY
 
+      // Store mouse position for shimmer effect
+      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+
       const rotX = (mouseY / (rect.height / 2)) * -maxRotation
       const rotY = (mouseX / (rect.width / 2)) * maxRotation
 
@@ -43,10 +53,28 @@ export function use3DCard(maxRotation = 8) {
     translateZ.set(0)
   }, [rotateX, rotateY, translateZ])
 
-  return { ref, rotateX, rotateY, translateZ, onMouseMove, onMouseLeave, isHoverCapable }
+  // Get shadow based on options
+  const getShadow = () => {
+    if (options?.deepShadow) {
+      return '0 40px 80px rgba(15, 14, 13, 0.4)'
+    }
+    return '0 12px 25px rgba(0, 0, 0, 0.3)'
+  }
+
+  return { 
+    ref, 
+    rotateX, 
+    rotateY, 
+    translateZ, 
+    onMouseMove, 
+    onMouseLeave, 
+    isHoverCapable,
+    mousePos,
+    shadowStyle: getShadow(),
+  }
 }
 
-export function useHeroMouseTilt(maxRotation = 5) {
+export function useHeroMouseTilt(maxRotation = 12, enableShimmer = true) {
   const ref = useRef<HTMLDivElement>(null)
   const [isHoverCapable, setIsHoverCapable] = useState(false)
 
