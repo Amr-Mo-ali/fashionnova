@@ -4,18 +4,23 @@ import type { Product } from '@prisma/client'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from './CartProvider'
 import ProductImage from './ProductImage'
 
 function isArabicText(text: string) {
-  return /[؀-ۿ]/.test(text)
+  return /[\u0600-\u06FF]/.test(text)
+}
+
+function normalizeSwatchColor(color: string) {
+  return CSS.supports('color', color) ? color : '#7a7068'
 }
 
 export default function ProductDetailForm({ product }: { product: Product }) {
   const router = useRouter()
   const { addLine, openCartDrawer } = useCart()
   const [added, setAdded] = useState(false)
+  const resetAddedTimeout = useRef<number | null>(null)
 
   const sizes = product.sizes.length > 0 ? product.sizes : []
   const colors = product.colors.length > 0 ? product.colors : []
@@ -25,15 +30,24 @@ export default function ProductDetailForm({ product }: { product: Product }) {
   const [color, setColor] = useState(colors[0] ?? '')
   const [quantity, setQuantity] = useState(1)
 
+  useEffect(() => {
+    return () => {
+      if (resetAddedTimeout.current) {
+        window.clearTimeout(resetAddedTimeout.current)
+      }
+    }
+  }, [])
+
   const canAdd = useMemo(() => {
     if (product.stock < 1) return false
     if (sizes.length > 0 && !size) return false
     if (colors.length > 0 && !color) return false
-    return true
-  }, [product.stock, sizes.length, colors.length, size, color])
+    return quantity >= 1 && quantity <= product.stock
+  }, [product.stock, sizes.length, colors.length, size, color, quantity])
 
   function handleAddToCart() {
-    if (!canAdd || quantity < 1 || quantity > product.stock) return
+    if (!canAdd) return
+
     addLine({
       productId: product.id,
       name: product.name,
@@ -44,31 +58,37 @@ export default function ProductDetailForm({ product }: { product: Product }) {
       color: colors.length > 0 ? color : 'Default',
       quantity,
     })
+
     setAdded(true)
     openCartDrawer()
-    setTimeout(() => setAdded(false), 2000)
+
+    if (resetAddedTimeout.current) {
+      window.clearTimeout(resetAddedTimeout.current)
+    }
+
+    resetAddedTimeout.current = window.setTimeout(() => setAdded(false), 2000)
   }
 
   const isArabic = isArabicText(product.description)
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:items-start">
+    <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-16">
       <motion.div
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
       >
-        <nav aria-label="Breadcrumb" className="text-[12px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
+        <nav aria-label="Breadcrumb" className="text-[11px] font-[900] uppercase tracking-[0.2em] text-[#7a7068]">
           <p>
-            <Link href="/" className="transition hover:text-[#FAFAFA]">
+            <Link href="/" className="transition hover:text-[#b8976a]">
               Home
             </Link>{' '}
             <span className="mx-2">·</span>
-            <span className="text-[#FAFAFA]">{product.category}</span>
+            <span className="text-[#b8976a]">{product.category}</span>
           </p>
         </nav>
 
-        <div className="mt-6 overflow-hidden rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] shadow-[0_24px_60px_rgba(0,0,0,0.3)]">
+        <div className="dramatic-card mt-6 overflow-hidden">
           <ProductImage
             src={selectedImage}
             alt={product.name}
@@ -77,22 +97,23 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         </div>
 
         {productImages.length > 1 ? (
-          <div className="mt-5 grid grid-cols-4 gap-3">
+          <div className="mt-4 grid grid-cols-4 gap-3">
             {productImages.map((src) => (
               <button
                 key={src}
                 type="button"
                 onClick={() => setSelectedImage(src)}
-                className={`overflow-hidden rounded-[4px] border p-1 transition ${
+                className={`overflow-hidden border p-1 transition ${
                   selectedImage === src
-                    ? 'border-[#8B5CF6]'
-                    : 'border-[rgba(255,255,255,0.08)] hover:border-[#8B5CF6]'
+                    ? 'border-[#b8976a]'
+                    : 'border-[rgba(184,151,106,0.2)] hover:border-[#b8976a]'
                 }`}
+                aria-label={`View ${product.name} thumbnail`}
               >
                 <ProductImage
                   src={src}
                   alt={`${product.name} thumbnail`}
-                  className="aspect-[3/4] w-full"
+                  className="aspect-[4/5] w-full"
                 />
               </button>
             ))}
@@ -106,26 +127,27 @@ export default function ProductDetailForm({ product }: { product: Product }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] as const }}
       >
-        <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
+        <p className="text-[10px] font-[900] uppercase tracking-[0.2em] text-[#7a7068]">
           {product.category}
         </p>
-        <h1 className="mt-5 font-[family-name:var(--font-outfit),sans-serif] text-4xl font-black leading-tight text-[#FAFAFA] sm:text-5xl md:text-6xl">
-          {product.name}
+        <h1 className="mt-4 font-serif text-[42px] leading-none text-[#0f0e0d] sm:text-[56px]">
+          <span className="font-[300]">The </span>
+          <span className="font-[900]">{product.name}</span>
         </h1>
-        <p className="mt-6 text-3xl font-bold text-[#8B5CF6]">
+        <p className="mt-6 text-[16px] font-[900] text-[#b8976a]">
           EGP {product.price.toLocaleString()}
         </p>
-        <p className={`mt-8 text-base leading-[1.8] text-[rgba(250,250,250,0.6)] ${isArabic ? 'arabic' : ''}`}>
+        <p className={`mt-8 text-[14px] leading-7 text-[#7a7068] sm:text-[16px] ${isArabic ? 'arabic text-right' : ''}`}>
           {product.description}
         </p>
-        <p className="mt-6 text-sm font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
+        <p className="mt-6 text-[11px] font-[900] uppercase tracking-[0.2em] text-[#7a7068]">
           {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
         </p>
 
-        <div className="mt-12 space-y-8">
+        <div className="mt-12 space-y-6">
           {sizes.length > 0 ? (
             <div>
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
+              <p className="mb-3 text-[10px] font-[900] uppercase tracking-[0.2em] text-[#7a7068]">
                 Size
               </p>
               <div className="flex flex-wrap gap-3">
@@ -134,9 +156,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                     key={s}
                     type="button"
                     onClick={() => setSize(s)}
-                    className={`min-h-[44px] rounded-lg border px-5 py-3 text-sm font-bold transition ${
-                      size === s ? 'border-[#8B5CF6] bg-[#8B5CF6]/15 text-[#FAFAFA]' : 'border-[rgba(255,255,255,0.15)] text-[#FAFAFA] hover:border-[#8B5CF6]'
-                    }`}
+                    className={`category-chip min-w-[64px] ${size === s ? 'category-chip-active' : 'category-chip-inactive'}`}
                   >
                     {s}
                   </button>
@@ -147,7 +167,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
 
           {colors.length > 0 ? (
             <div>
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
+              <p className="mb-3 text-[10px] font-[900] uppercase tracking-[0.2em] text-[#7a7068]">
                 Color
               </p>
               <div className="flex flex-wrap gap-3">
@@ -156,19 +176,27 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                     key={c}
                     type="button"
                     onClick={() => setColor(c)}
-                    className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition ${
-                      color === c ? 'border-[#8B5CF6]' : 'border-[rgba(255,255,255,0.3)]'
+                    className={`flex min-h-12 min-w-12 items-center justify-center border px-3 text-[10px] font-[900] uppercase tracking-[0.2em] ${
+                      color === c
+                        ? 'border-[#0f0e0d] bg-[#0f0e0d] text-[#f5f2ed]'
+                        : 'border-[rgba(184,151,106,0.24)] text-[#0f0e0d] hover:border-[#b8976a]'
                     }`}
-                    style={{ backgroundColor: c.toLowerCase() || '#666' }}
-                    aria-label={c}
-                  />
+                    aria-label={`Choose color ${c}`}
+                  >
+                    <span
+                      className="mr-2 inline-flex h-3 w-3 border border-[rgba(15,14,13,0.2)]"
+                      style={{ backgroundColor: normalizeSwatchColor(c) }}
+                      aria-hidden
+                    />
+                    {c}
+                  </button>
                 ))}
               </div>
             </div>
           ) : null}
 
           <div>
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)]">
+            <p className="mb-3 text-[10px] font-[900] uppercase tracking-[0.2em] text-[#7a7068]">
               Quantity
             </p>
             <div className="flex items-center gap-3">
@@ -176,7 +204,7 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                 type="button"
                 aria-label="Decrease quantity"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.15)] text-[#FAFAFA] transition hover:border-[#8B5CF6]"
+                className="flex h-12 w-12 items-center justify-center border border-[rgba(184,151,106,0.24)] text-[#0f0e0d] transition hover:border-[#b8976a]"
               >
                 −
               </button>
@@ -190,13 +218,14 @@ export default function ProductDetailForm({ product }: { product: Product }) {
                   if (!Number.isFinite(v)) return
                   setQuantity(Math.min(product.stock, Math.max(1, Math.round(v))))
                 }}
-                className="w-20 border-b border-[rgba(255,255,255,0.15)] bg-transparent py-2 text-center text-[#FAFAFA] focus:border-[#8B5CF6] focus:outline-none"
+                className="dramatic-input w-24 text-center"
+                aria-label="Product quantity"
               />
               <button
                 type="button"
                 aria-label="Increase quantity"
                 onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.15)] text-[#FAFAFA] transition hover:border-[#8B5CF6]"
+                className="flex h-12 w-12 items-center justify-center border border-[rgba(184,151,106,0.24)] text-[#0f0e0d] transition hover:border-[#b8976a]"
               >
                 +
               </button>
@@ -207,27 +236,27 @@ export default function ProductDetailForm({ product }: { product: Product }) {
             <div className="pill-badge">Out of stock</div>
           ) : null}
 
-          <div className="grid gap-4 sm:grid-cols-[1.2fr_0.8fr]">
+          <div className="grid gap-4 sm:grid-cols-2">
             <button
               type="button"
               disabled={!canAdd}
               onClick={handleAddToCart}
-              className="w-full min-h-[48px] rounded-lg bg-[#8B5CF6] px-6 text-sm font-bold uppercase tracking-[0.08em] text-[#FAFAFA] transition hover:filter hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+              className="dramatic-button w-full bg-[#0f0e0d] text-[#f5f2ed] hover:bg-[#f5f2ed] hover:text-[#0f0e0d]"
             >
               {added ? 'Added to bag' : 'Add to bag'}
             </button>
             <button
               type="button"
               onClick={() => router.push('/cart')}
-              className="w-full min-h-[48px] rounded-lg border border-[#8B5CF6] bg-transparent px-6 text-sm font-bold uppercase tracking-[0.08em] text-[#8B5CF6] transition hover:bg-[#8B5CF6]/10"
+              className="btn-secondary w-full"
             >
               View bag
             </button>
           </div>
 
-          <div className="border-t border-[rgba(255,255,255,0.08)] pt-6">
-            <div className="info-bar">
-              <span className="text-base">ℹ️</span>
+          <div className="border-t border-[rgba(184,151,106,0.2)] pt-6">
+            <div className="info-bar bg-[rgba(184,151,106,0.08)]">
+              <span className="text-base" aria-hidden>i</span>
               <span>Complimentary express delivery on all orders.</span>
             </div>
           </div>

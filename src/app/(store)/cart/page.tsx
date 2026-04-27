@@ -18,7 +18,7 @@ export default function CartPage() {
   const { lines, subtotal, setQuantity, removeLine } = useCart()
 
   return (
-    <div className="bg-[#09090B] px-4 py-14 sm:px-8">
+    <div className="px-4 py-16 sm:px-8 md:py-24">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -26,9 +26,10 @@ export default function CartPage() {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8B5CF6]">Your selection</p>
-          <h1 className="mt-4 font-[family-name:var(--font-outfit),sans-serif] text-4xl font-black text-[#FAFAFA] sm:text-5xl">
-            Shopping bag
+          <p className="text-label text-[#b8976a]">Your selection</p>
+          <h1 className="mt-4 font-serif text-[42px] leading-none text-[#0f0e0d] sm:text-[56px]">
+            <span className="font-[300]">Shopping </span>
+            <span className="font-[900]">Bag</span>
           </h1>
         </motion.div>
 
@@ -36,11 +37,10 @@ export default function CartPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="min-h-[calc(100vh-18rem)] flex flex-col items-center justify-center rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] p-16 text-center shadow-[0_30px_70px_rgba(0,0,0,0.3)]"
+            className="dramatic-card flex min-h-[calc(100vh-18rem)] flex-col items-center justify-center p-16 text-center"
           >
-            <span className="mb-4 text-[40px]">👜</span>
-            <p className="text-base text-[rgba(250,250,250,0.6)]">Your bag is empty.</p>
-            <Link href="/" className="btn-primary mt-8">
+            <p className="text-base text-[#7a7068]">Your bag is empty.</p>
+            <Link href="/" className="btn-secondary mt-8">
               Continue shopping
             </Link>
           </motion.div>
@@ -54,47 +54,43 @@ export default function CartPage() {
                   variants={listItem}
                   initial="hidden"
                   animate="show"
-                  className="rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] p-6 shadow-[0_24px_50px_rgba(0,0,0,0.3)]"
+                  className="dramatic-card p-6"
                 >
                   <div className="flex flex-col gap-5 sm:flex-row">
                     <Link href={`/products/${line.productId}`} className="shrink-0">
                       <ProductImage
                         src={line.image}
                         alt={line.name}
-                        className="h-32 w-28 rounded-[4px] border border-[rgba(255,255,255,0.08)] object-cover sm:h-36 sm:w-32"
+                        className="aspect-[4/5] w-28 object-cover sm:w-32"
                       />
                     </Link>
                     <div className="min-w-0 flex-1">
                       <Link
                         href={`/products/${line.productId}`}
-                        className="text-lg font-[family-name:var(--font-outfit),sans-serif] font-bold text-[#FAFAFA] transition hover:text-[#8B5CF6]"
+                        className="font-serif text-[24px] font-[900] text-[#0f0e0d] transition hover:text-[#b8976a]"
                       >
                         {line.name}
                       </Link>
-                      <p className="mt-1 text-sm text-[rgba(250,250,250,0.6)]">
+                      <p className="mt-2 text-[11px] font-[900] uppercase tracking-[0.2em] text-[#7a7068]">
                         {line.size} · {line.color}
                       </p>
-                      <p className="mt-3 text-sm text-[rgba(250,250,250,0.6)]">EGP {line.price.toLocaleString()} each</p>
+                      <p className="mt-3 text-sm text-[#7a7068]">EGP {line.price.toLocaleString()} each</p>
                       <div className="mt-5 flex flex-wrap items-center gap-3">
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
-                            aria-label="Decrease"
-                            className="flex h-10 w-10 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.15)] text-[#FAFAFA] transition hover:border-[#8B5CF6]"
-                            onClick={() =>
-                              setQuantity(line.productId, line.size, line.color, line.quantity - 1)
-                            }
+                            aria-label={`Decrease quantity for ${line.name}`}
+                            className="flex h-12 w-12 items-center justify-center border border-[rgba(184,151,106,0.24)] text-[#0f0e0d] transition hover:border-[#b8976a]"
+                            onClick={() => setQuantity(line.productId, line.size, line.color, line.quantity - 1)}
                           >
                             −
                           </button>
-                          <span className="w-9 text-center text-sm font-medium text-[#FAFAFA]">{line.quantity}</span>
+                          <span className="w-9 text-center text-sm font-medium text-[#0f0e0d]">{line.quantity}</span>
                           <button
                             type="button"
-                            aria-label="Increase"
-                            className="flex h-10 w-10 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.15)] text-[#FAFAFA] transition hover:border-[#8B5CF6]"
-                            onClick={() =>
-                              setQuantity(line.productId, line.size, line.color, line.quantity + 1)
-                            }
+                            aria-label={`Increase quantity for ${line.name}`}
+                            className="flex h-12 w-12 items-center justify-center border border-[rgba(184,151,106,0.24)] text-[#0f0e0d] transition hover:border-[#b8976a]"
+                            onClick={() => setQuantity(line.productId, line.size, line.color, line.quantity + 1)}
                           >
                             +
                           </button>
@@ -102,14 +98,14 @@ export default function CartPage() {
                         <button
                           type="button"
                           onClick={() => removeLine(line.productId, line.size, line.color)}
-                          className="text-sm font-bold uppercase tracking-[0.08em] text-[rgba(250,250,250,0.6)] transition hover:text-[#FAFAFA]"
+                          className="text-[11px] font-[900] uppercase tracking-[0.2em] text-[#7a7068] transition hover:text-[#0f0e0d]"
                         >
                           Remove
                         </button>
                       </div>
                     </div>
                     <div className="flex shrink-0 items-end text-right">
-                      <p className="text-base font-bold text-[#8B5CF6]">
+                      <p className="text-base font-[900] text-[#b8976a]">
                         EGP {(line.price * line.quantity).toLocaleString()}
                       </p>
                     </div>
@@ -122,28 +118,22 @@ export default function CartPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.45, delay: 0.1 }}
-              className="rounded-[4px] border border-[rgba(255,255,255,0.08)] bg-[#111113] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.3)]"
+              className="dramatic-card h-fit p-8 lg:sticky lg:top-28"
             >
-              <h2 className="font-[family-name:var(--font-outfit),sans-serif] text-xl font-bold text-[#FAFAFA]">
+              <h2 className="font-serif text-[28px] font-[900] text-[#0f0e0d]">
                 Summary
               </h2>
-              <div className="mt-6 flex justify-between text-sm text-[rgba(250,250,250,0.6)]">
+              <div className="mt-6 flex justify-between text-sm text-[#7a7068]">
                 <span>Subtotal</span>
-                <span className="font-bold text-[#8B5CF6]">EGP {subtotal.toLocaleString()}</span>
+                <span className="font-[900] text-[#0f0e0d]">EGP {subtotal.toLocaleString()}</span>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-[rgba(250,250,250,0.6)]">
-                Deposit + balance on delivery — see checkout for details.
+              <p className="mt-3 text-sm leading-relaxed text-[#7a7068]">
+                Deposit + balance on delivery. Checkout shows the required amount clearly.
               </p>
-              <Link
-                href="/checkout"
-                className="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-[#8B5CF6] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#FAFAFA] transition hover:filter hover:brightness-110"
-              >
+              <Link href="/checkout" className="dramatic-button mt-8 flex w-full bg-[#0f0e0d] text-[#f5f2ed] hover:bg-[#f5f2ed] hover:text-[#0f0e0d]">
                 Checkout
               </Link>
-              <Link
-                href="/"
-                className="mt-4 block text-center text-sm text-[rgba(250,250,250,0.6)] transition hover:text-[#FAFAFA]"
-              >
+              <Link href="/" className="mt-4 block text-center text-[11px] font-[900] uppercase tracking-[0.2em] text-[#7a7068] transition hover:text-[#0f0e0d]">
                 Continue shopping
               </Link>
             </motion.div>

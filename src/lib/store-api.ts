@@ -15,24 +15,39 @@ async function internalOrigin(): Promise<string | null> {
 export async function fetchProductsFromApi(): Promise<Product[]> {
   const origin = await internalOrigin()
   if (!origin) return []
-  const res = await fetch(`${origin}/api/products`, { cache: 'no-store' })
-  if (!res.ok) return []
-  return res.json() as Promise<Product[]>
+
+  try {
+    const res = await fetch(`${origin}/api/products`, { cache: 'no-store' })
+    if (!res.ok) return []
+    return res.json() as Promise<Product[]>
+  } catch {
+    return []
+  }
 }
 
 export async function fetchProductFromApi(id: string): Promise<Product | null> {
   const origin = await internalOrigin()
   if (!origin) return null
-  const res = await fetch(`${origin}/api/products/${id}`, { cache: 'no-store' })
-  if (res.status === 404) return null
-  if (!res.ok) return null
-  return res.json() as Promise<Product>
+
+  try {
+    const res = await fetch(`${origin}/api/products/${id}`, { cache: 'no-store' })
+    if (res.status === 404) return null
+    if (!res.ok) return null
+    return res.json() as Promise<Product>
+  } catch {
+    return null
+  }
 }
 
 export async function fetchCollectionsFromApi(): Promise<Collection[]> {
   const origin = await internalOrigin()
   if (!origin) return []
-  const res = await fetch(`${origin}/api/collections`, { cache: 'no-store' })
-  if (!res.ok) return []
-  return res.json() as Promise<Collection[]>
+
+  try {
+    const res = await fetch(`${origin}/api/collections`, { cache: 'no-store' })
+    if (!res.ok) return []
+    return res.json() as Promise<Collection[]>
+  } catch {
+    return []
+  }
 }

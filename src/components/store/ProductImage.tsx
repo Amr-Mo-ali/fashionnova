@@ -1,4 +1,7 @@
 'use client'
+/* eslint-disable @next/next/no-img-element */
+
+import { useState } from 'react'
 
 export default function ProductImage({
   src,
@@ -9,10 +12,12 @@ export default function ProductImage({
   alt: string
   className?: string
 }) {
-  if (!src) {
+  const [failed, setFailed] = useState(false)
+
+  if (!src || failed) {
     return (
-      <div className={`flex items-center justify-center bg-zinc-800 text-sm text-zinc-500 ${className}`}>
-        No image
+      <div className={`flex items-center justify-center bg-[#e8e0d4] text-sm uppercase tracking-[0.2em] text-[#7a7068] ${className}`}>
+        Image unavailable
       </div>
     )
   }
@@ -23,6 +28,8 @@ export default function ProductImage({
       alt={alt}
       className={`object-cover ${className}`}
       loading="lazy"
+      decoding="async"
+      onError={() => setFailed(true)}
     />
   )
 }

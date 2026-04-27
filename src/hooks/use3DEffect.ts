@@ -9,9 +9,14 @@ interface Use3DCardOptions {
   enableShimmer?: boolean
 }
 
+function canHover() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia('(hover: hover)').matches
+}
+
 export function use3DCard(maxRotation = 12, options?: Use3DCardOptions) {
   const ref = useRef<HTMLDivElement>(null)
-  const [isHoverCapable, setIsHoverCapable] = useState(false)
+  const [isHoverCapable, setIsHoverCapable] = useState(canHover)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   const rotateX = useSpring(0, { stiffness: 300, damping: 30 })
@@ -19,9 +24,10 @@ export function use3DCard(maxRotation = 12, options?: Use3DCardOptions) {
   const translateZ = useSpring(0, { stiffness: 300, damping: 30 })
 
   useEffect(() => {
-    // Only enable 3D on devices with hover capability (non-touch)
-    const hasHover = window.matchMedia('(hover: hover)').matches
-    setIsHoverCapable(hasHover)
+    const media = window.matchMedia('(hover: hover)')
+    const onChange = (event: MediaQueryListEvent) => setIsHoverCapable(event.matches)
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
   }, [])
 
   const onMouseMove = useCallback(
@@ -76,14 +82,16 @@ export function use3DCard(maxRotation = 12, options?: Use3DCardOptions) {
 
 export function useHeroMouseTilt(maxRotation = 12, enableShimmer = true) {
   const ref = useRef<HTMLDivElement>(null)
-  const [isHoverCapable, setIsHoverCapable] = useState(false)
+  const [isHoverCapable, setIsHoverCapable] = useState(canHover)
 
   const rotateX = useSpring(0, { stiffness: 150, damping: 20 })
   const rotateY = useSpring(0, { stiffness: 150, damping: 20 })
 
   useEffect(() => {
-    const hasHover = window.matchMedia('(hover: hover)').matches
-    setIsHoverCapable(hasHover)
+    const media = window.matchMedia('(hover: hover)')
+    const onChange = (event: MediaQueryListEvent) => setIsHoverCapable(event.matches)
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
   }, [])
 
   const onMouseMove = useCallback(
@@ -109,6 +117,8 @@ export function useHeroMouseTilt(maxRotation = 12, enableShimmer = true) {
     rotateX.set(0)
     rotateY.set(0)
   }, [rotateX, rotateY])
+
+  void enableShimmer
 
   return { ref, rotateX, rotateY, onMouseMove, onMouseLeave, isHoverCapable }
 }
