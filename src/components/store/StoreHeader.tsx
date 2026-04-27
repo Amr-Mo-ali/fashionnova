@@ -5,9 +5,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useCart } from './CartProvider'
+import SocialLinks from './SocialLinks'
 
 const NAV_LINKS = [
-  { label: 'Collection', href: '/' },
+  { label: 'Shop', href: '/' },
+  { label: 'Collections', href: '/collections' },
   { label: 'Cart', href: '/cart' },
 ]
 
@@ -51,29 +53,36 @@ export default function StoreHeader() {
             </Link>
           </motion.div>
 
-          <nav className="hidden items-center gap-8 sm:flex" aria-label="Primary navigation">
-            {NAV_LINKS.map((link) => {
-              const active = pathname === link.href
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative inline-flex min-h-[44px] items-center py-2 text-[11px] font-[900] uppercase tracking-[0.2em] transition-colors duration-150 ${
-                    active
-                      ? 'text-[#b8976a] after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:bg-[#b8976a]'
-                      : 'text-[#7a7068] hover:text-[#b8976a]'
-                  }`}
-                >
-                  {link.label}
-                  {link.href === '/cart' && itemCount > 0 ? (
-                    <span className="ml-2 inline-flex min-h-5 min-w-5 items-center justify-center bg-[#b8976a] px-2 text-[10px] font-[900] text-[#0f0e0d]">
-                      {itemCount > 99 ? '99+' : itemCount}
-                    </span>
-                  ) : null}
-                </Link>
-              )
-            })}
-          </nav>
+          <div className="hidden items-center gap-8 sm:flex">
+            <nav className="flex items-center gap-8" aria-label="Primary navigation">
+              {NAV_LINKS.map((link) => {
+                const active = pathname === link.href
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`relative inline-flex min-h-[44px] items-center py-2 text-[11px] font-[900] uppercase tracking-[0.2em] transition-colors duration-150 ${
+                      active
+                        ? 'text-[#b8976a] after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:bg-[#b8976a]'
+                        : 'text-[#7a7068] hover:text-[#b8976a]'
+                    }`}
+                  >
+                    {link.label}
+                    {link.href === '/cart' && itemCount > 0 ? (
+                      <span className="ml-2 inline-flex min-h-5 min-w-5 items-center justify-center bg-[#b8976a] px-2 text-[10px] font-[900] text-[#0f0e0d]">
+                        {itemCount > 99 ? '99+' : itemCount}
+                      </span>
+                    ) : null}
+                  </Link>
+                )
+              })}
+            </nav>
+
+            <SocialLinks
+              className="ml-2 flex items-center gap-1"
+              iconClassName="text-[#0f0e0d]"
+            />
+          </div>
 
           <div className="flex items-center gap-3">
             <motion.button
@@ -156,6 +165,11 @@ export default function StoreHeader() {
                   </Link>
                 ))}
               </nav>
+
+              <div className="mb-6">
+                <p className="mb-3 text-[11px] font-[900] uppercase tracking-[0.2em] text-[#b8976a]">Follow us</p>
+                <SocialLinks />
+              </div>
 
               <button
                 type="button"

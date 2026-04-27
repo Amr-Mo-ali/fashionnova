@@ -1,6 +1,6 @@
 'use client'
 
-import type { Collection, Product } from '@prisma/client'
+import type { Product } from '@prisma/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,6 +10,7 @@ import {
   categoryFilterHref,
 } from '@/lib/shop-categories'
 import { useHeroMouseTilt } from '@/hooks/use3DEffect'
+import type { StoreCollection } from '@/lib/store-api'
 import ProductCard from './ProductCard'
 
 const container = {
@@ -51,7 +52,7 @@ const scrollReveal = {
 
 type Props = {
   products: Product[]
-  collections: Collection[]
+  collections: StoreCollection[]
   initialCategory: string
 }
 
@@ -239,16 +240,34 @@ export default function HomeView({ products, collections, initialCategory }: Pro
                     className="dramatic-card group relative block h-full overflow-hidden"
                   >
                     <div className={`overflow-hidden bg-[#e8e0d4] ${idx === 0 ? 'h-80 sm:h-96' : 'h-64'}`}>
-                      {collection.image ? (
+                      {collection.mediaUrl ? (
+                        collection.mediaType === 'video' ? (
+                          <video
+                            src={collection.mediaUrl}
+                            className="h-full w-full object-cover"
+                            muted
+                            autoPlay
+                            loop
+                            playsInline
+                          />
+                        ) : (
+                          <motion.img
+                            src={collection.mediaUrl}
+                            alt={collection.title}
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                            whileHover={{ scale: 1.08 }}
+                          />
+                        )
+                      ) : collection.coverImage ? (
                         <motion.img
-                          src={collection.image}
-                          alt={collection.name}
+                          src={collection.coverImage}
+                          alt={collection.title}
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                           whileHover={{ scale: 1.08 }}
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center px-6 text-center text-[14px] uppercase tracking-[0.2em] text-[#7a7068]">
-                          {collection.name}
+                          {collection.title}
                         </div>
                       )}
                     </div>
@@ -256,13 +275,16 @@ export default function HomeView({ products, collections, initialCategory }: Pro
                     <div className="p-6 sm:p-8">
                       <p className="text-label text-[#7a7068]">Collection</p>
                       <h3 className="mt-3 font-serif text-[28px] font-[900] leading-none text-[#0f0e0d]">
-                        {collection.name}
+                        {collection.title}
                       </h3>
                       {collection.description ? (
                         <p className="mt-4 text-[14px] leading-7 text-[#7a7068]">
                           {collection.description}
                         </p>
                       ) : null}
+                      <p className="mt-4 text-[11px] font-[900] uppercase tracking-[0.2em] text-[#b8976a]">
+                        {collection.productCount} {collection.productCount === 1 ? 'product' : 'products'}
+                      </p>
                     </div>
                   </Link>
                 </motion.div>

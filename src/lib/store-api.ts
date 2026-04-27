@@ -1,15 +1,33 @@
 import { headers } from 'next/headers'
-import type { Collection, Product } from '@prisma/client'
+import type { Product } from '@prisma/client'
+
+export type StoreCollection = {
+  id: string
+  title: string
+  slug: string
+  description: string | null
+  coverImage: string | null
+  mediaUrl: string | null
+  mediaType: string
+  thumbnail: string | null
+  order: number
+  createdAt: string | Date
+  updatedAt: string | Date
+  productCount: number
+}
+
+export type StoreCollectionDetail = StoreCollection & {
+  products: Product[]
+}
 
 async function internalOrigin(): Promise<string | null> {
   const h = await headers()
   const host = h.get('x-forwarded-host') ?? h.get('host')
   if (!host) return null
-  const forwardedProto = h.get('x-forwarded-proto')
-  const proto =
-    forwardedProto ??
+  const forwardedProto =
+    h.get('x-forwarded-proto') ??
     (host.startsWith('localhost') || host.startsWith('127.') ? 'http' : 'https')
-  return `${proto}://${host}`
+  return `${forwardedProto}://${host}`
 }
 
 export async function fetchProductsFromApi(): Promise<Product[]> {
@@ -39,15 +57,29 @@ export async function fetchProductFromApi(id: string): Promise<Product | null> {
   }
 }
 
-export async function fetchCollectionsFromApi(): Promise<Collection[]> {
+export async function fetchCollectionsFromApi(): Promise<StoreCollection[]> {
   const origin = await internalOrigin()
   if (!origin) return []
 
   try {
     const res = await fetch(`${origin}/api/collections`, { cache: 'no-store' })
     if (!res.ok) return []
-    return res.json() as Promise<Collection[]>
+    return res.json() as Promise<StoreCollection[]>
   } catch {
     return []
+  }
+}
+
+export async function fetchCollectionFromApi(slug: string): Promise<StoreCollectionDetail | null> {
+  const origin = await internalOrigin()
+  if (!origin) return null
+
+  try {
+    const res = await fetch(`${origin}/api/collections/${slug}`, { cache: 'no-store' })
+    if (res.status === 404) return null
+    if (!res.ok) return null
+    return res.json() as Promise<StoreCollectionDetail>
+  } catch {
+    return null
   }
 }

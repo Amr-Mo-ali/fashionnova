@@ -2,14 +2,28 @@ import { NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { requireAdminSession } from '@/lib/api-auth'
-import { parseCollectionBody } from '@/lib/collection-payload'
+import {
+  createUniqueCollectionSlug,
+  parseCollectionBody,
+} from '@/lib/collection-payload'
 
 export async function GET() {
   try {
     const collections = await prisma.collection.findMany({
       orderBy: [{ order: 'desc' }, { updatedAt: 'desc' }],
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
     })
-    return NextResponse.json(collections)
+
+    return NextResponse.json(
+      collections.map((collection) => ({
+        ...collection,
+        productCount: collection._count.products,
+      }))
+    )
   } catch (error) {
     console.error('Failed to fetch collections:', error)
     return NextResponse.json(
@@ -38,16 +52,43 @@ export async function POST(request: Request) {
   }
 
   try {
+    const slug = await createUniqueCollectionSlug(parsed.data.slug || parsed.data.title, async (candidate) => {
+      const existing = await prisma.collection.findUnique({
+        where: { slug: candidate },
+        select: { id: true },
+      })
+      return Boolean(existing)
+    })
+
+    if (!slug) {
+      return NextResponse.json({ error: 'Slug is required' }, { status: 400 })
+    }
+
     const collection = await prisma.collection.create({
       data: {
-        name: parsed.data.name,
-        slug: parsed.data.slug,
+        title: parsed.data.title,
+        slug,
         description: parsed.data.description || null,
-        image: parsed.data.image || null,
+        coverImage: parsed.data.coverImage || null,
+        mediaUrl: parsed.data.mediaUrl || null,
+        mediaType: parsed.data.mediaType,
+        thumbnail: parsed.data.thumbnail || parsed.data.coverImage || null,
         order: parsed.data.order,
       },
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
     })
-    return NextResponse.json(collection, { status: 201 })
+
+    return NextResponse.json(
+      {
+        ...collection,
+        productCount: collection._count.products,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Failed to create collection:', error)
     if (

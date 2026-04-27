@@ -3,6 +3,7 @@ import {
   SHOP_CATEGORY_CHIPS,
   categoryFilterHref,
 } from '@/lib/shop-categories'
+import SocialLinks from './SocialLinks'
 
 const WHATSAPP_DISPLAY = '01024888895'
 const WHATSAPP_LINK = 'https://wa.me/201024888895'
@@ -10,7 +11,6 @@ const WHATSAPP_LINK = 'https://wa.me/201024888895'
 export default function StoreFooter() {
   const categoryLinks = SHOP_CATEGORY_CHIPS.filter((c) => c !== 'All')
   const infoItems = ['About Us', 'Terms & Conditions', 'Privacy Policy', 'FAQ']
-  const socialItems = ['Instagram', 'Facebook', 'Twitter']
 
   return (
     <footer className="border-t border-[rgba(184,151,106,0.24)] bg-[#0f0e0d] text-[#f5f2ed]">
@@ -36,6 +36,11 @@ export default function StoreFooter() {
               <li>
                 <Link href="/" className="inline-flex min-h-[44px] items-center text-[14px] text-[#d4b896] transition hover:text-[#f5f2ed]">
                   All
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections" className="inline-flex min-h-[44px] items-center text-[14px] text-[#d4b896] transition hover:text-[#f5f2ed]">
+                  Collections
                 </Link>
               </li>
               {categoryLinks.map((cat) => (
@@ -80,6 +85,13 @@ export default function StoreFooter() {
                 ))}
               </ul>
             </div>
+
+            <div className="mt-10">
+              <h3 className="mb-6 text-[11px] font-[900] uppercase tracking-[0.2em] text-[#b8976a]">
+                Follow Us
+              </h3>
+              <SocialLinks />
+            </div>
           </div>
         </div>
 
@@ -87,13 +99,6 @@ export default function StoreFooter() {
           <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a7068]">
             © {new Date().getFullYear()} FashionNova. All rights reserved.
           </p>
-          <div className="flex gap-8">
-            {socialItems.map((item) => (
-              <span key={item} className="text-[11px] uppercase tracking-[0.2em] text-[#7a7068]">
-                {item}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </footer>

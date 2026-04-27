@@ -1,6 +1,5 @@
 export function createSlug(value: string): string {
   return value
-    .trim()
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '')
@@ -8,11 +7,32 @@ export function createSlug(value: string): string {
     .replace(/^-|-$/g, '')
 }
 
+export async function createUniqueCollectionSlug(
+  title: string,
+  exists: (slug: string) => Promise<boolean>
+): Promise<string> {
+  const base = createSlug(title)
+  if (!base) return ''
+
+  let slug = base
+  let attempt = 1
+
+  while (await exists(slug)) {
+    attempt += 1
+    slug = `${base}-${attempt}`
+  }
+
+  return slug
+}
+
 type CollectionPayload = {
-  name: string
+  title: string
   slug: string
   description: string
-  image: string
+  coverImage: string
+  mediaUrl: string
+  mediaType: string
+  thumbnail: string
   order: number
 }
 
@@ -26,21 +46,25 @@ export function parseCollectionBody(
   }
 
   const o = body as Record<string, unknown>
-  const name = typeof o.name === 'string' ? o.name.trim() : ''
+  const title = typeof o.title === 'string' ? o.title.trim() : ''
   const rawSlug = typeof o.slug === 'string' ? o.slug.trim() : ''
-  const slug = createSlug(rawSlug || name)
+  const slug = createSlug(rawSlug || title)
   const description = typeof o.description === 'string' ? o.description.trim() : ''
-  const image = typeof o.image === 'string' ? o.image.trim() : ''
+  const coverImage = typeof o.coverImage === 'string' ? o.coverImage.trim() : ''
+  const mediaUrl = typeof o.mediaUrl === 'string' ? o.mediaUrl.trim() : ''
+  const mediaTypeRaw = typeof o.mediaType === 'string' ? o.mediaType.trim().toLowerCase() : 'image'
+  const mediaType = mediaTypeRaw === 'video' ? 'video' : 'image'
+  const thumbnail = typeof o.thumbnail === 'string' ? o.thumbnail.trim() : ''
   const orderCandidate =
     typeof o.order === 'number'
       ? o.order
       : typeof o.order === 'string'
-      ? Number(o.order)
-      : 0
+        ? Number(o.order)
+        : 0
   const order = Number.isFinite(orderCandidate) ? Math.max(0, Math.round(orderCandidate)) : 0
 
-  if (!name) {
-    return { ok: false, error: 'Name is required' }
+  if (!title) {
+    return { ok: false, error: 'Title is required' }
   }
 
   if (!slug) {
@@ -50,10 +74,13 @@ export function parseCollectionBody(
   return {
     ok: true,
     data: {
-      name,
+      title,
       slug,
       description,
-      image,
+      coverImage,
+      mediaUrl,
+      mediaType,
+      thumbnail,
       order,
     },
   }

@@ -4,20 +4,20 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function DeleteCollectionButton({
-  collectionId,
-  collectionName,
+  collectionSlug,
+  collectionTitle,
 }: {
-  collectionId: string
-  collectionName: string
+  collectionSlug: string
+  collectionTitle: string
 }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
   async function handleDelete() {
-    if (!confirm(`Delete “${collectionName}”? This cannot be undone.`)) return
+    if (!confirm(`Delete "${collectionTitle}"? This cannot be undone.`)) return
     setLoading(true)
     try {
-      const res = await fetch(`/api/collections/${collectionId}`, { method: 'DELETE' })
+      const res = await fetch(`/api/collections/${collectionSlug}`, { method: 'DELETE' })
       if (!res.ok) {
         let msg = 'Delete failed'
         try {
@@ -44,7 +44,7 @@ export default function DeleteCollectionButton({
       disabled={loading}
       className="rounded-lg border border-red-500/40 px-3 py-1.5 text-xs font-medium text-red-400 transition hover:bg-red-500/10 disabled:opacity-50"
     >
-      {loading ? '…' : 'Delete'}
+      {loading ? '...' : 'Delete'}
     </button>
   )
 }
